@@ -32,7 +32,7 @@ jobs:
       - name: mypy --strict
         run: uv run mypy
       - name: detección de secretos
-        run: git ls-files -z | xargs -0 uv run detect-secrets-hook --baseline .secrets.baseline
+        run: uv run pre-commit run detect-secrets --all-files
       - name: validación de esquemas
         run: uv run python ops/scripts/validate_schemas.py
       - name: prueba de arquitectura
@@ -89,7 +89,7 @@ jobs:
         image: pgvector/pgvector:pg16
         env:
           POSTGRES_USER: carmen
-          POSTGRES_PASSWORD: carmen
+          POSTGRES_PASSWORD: carmen # pragma: allowlist secret (solo CI efímero)
           POSTGRES_DB: carmen
         ports: ["5432:5432"]
         options: >-

@@ -1,0 +1,34 @@
+# Secretos: nunca se versionan (5.18.9). Solo los ficheros *.example.env.
+*.env
+!*.example.env
+!ops/versions.env
+.env*
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.json
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+web/dist/
+web/coverage/
+
+# Sistema
+.DS_Store

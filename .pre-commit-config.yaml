@@ -1,0 +1,51 @@
+# Puertas de pre-commit (8.1). Ruff, mypy y detect-secrets se ejecutan desde el entorno
+# bloqueado en uv.lock (language: system) para que la versión sea la misma que en CI.
+# Requiere el entorno activado: uv sync && source .venv/bin/activate && pre-commit install
+default_install_hook_types: [pre-commit]
+fail_fast: false
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-json
+        exclude: ^web/tsconfig\.json$
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        exclude: ^docs/reference/
+      - id: trailing-whitespace
+        exclude: ^docs/reference/
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check --force-exclude
+        language: system
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format --check --force-exclude
+        language: system
+        types_or: [python, pyi]
+      - id: mypy
+        name: mypy --strict
+        entry: mypy
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+      - id: detect-secrets
+        name: detect-secrets
+        entry: detect-secrets-hook --baseline .secrets.baseline
+        language: system
+        exclude: ^(uv\.lock|web/package-lock\.json|\.secrets\.baseline)$
+      - id: validate-schemas
+        name: validar esquemas de contracts/
+        entry: python ops/scripts/validate_schemas.py
+        language: system
+        files: ^contracts/.*\.schema\.json$

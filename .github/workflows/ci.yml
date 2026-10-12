@@ -1,0 +1,195 @@
+# Integración continua por etapas (sección 8.4).
+# Etapas 1 a 4: en cada push. Etapas 5 a 11: en main y en cada pull request.
+# Una etapa sin pruebas todavía pasa e indica qué prompt la llena.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.11.32"
+
+jobs:
+  stage-01-static:
+    name: "1 · estática"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - name: ruff
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: mypy --strict
+        run: uv run mypy
+      - name: detección de secretos
+        run: git ls-files -z | xargs -0 uv run detect-secrets-hook --baseline .secrets.baseline
+      - name: validación de esquemas
+        run: uv run python ops/scripts/validate_schemas.py
+      - name: prueba de arquitectura
+        run: uv run ops/scripts/run_stage.sh architecture "Prompt 1"
+
+  stage-02-domain:
+    name: "2 · dominio"
+    needs: stage-01-static
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh domain "Prompt 2"
+
+  stage-03-application:
+    name: "3 · aplicación"
+    needs: stage-01-static
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh application "Prompt 5"
+      - name: cobertura por módulo (8.2)
+        run: |
+          uv run pytest api/tests --ignore=api/tests/repositories -q --cov --cov-report=json:coverage.json
+          uv run python ops/scripts/check_coverage.py coverage.json
+
+  stage-04-adapters:
+    name: "4 · adaptadores"
+    needs: stage-01-static
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh adapters "Prompt 11"
+
+  stage-05-data:
+    name: "5 · datos"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: [stage-02-domain, stage-03-application, stage-04-adapters]
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        # Se fijará por digest desde ops/versions.env cuando llegue la migración 0001 (Prompt 7).
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: carmen
+          POSTGRES_PASSWORD: carmen
+          POSTGRES_DB: carmen
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U carmen" --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh repositories "Prompt 7"
+
+  stage-06-contract:
+    name: "6 · contrato"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: [stage-02-domain, stage-03-application, stage-04-adapters]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh contract "Prompt 9"
+
+  stage-07-api:
+    name: "7 · API y SSE"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: [stage-02-domain, stage-03-application, stage-04-adapters]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh api "Prompt 21"
+
+  stage-08-e2e:
+    name: "8 · extremo a extremo"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: [stage-05-data, stage-06-contract, stage-07-api]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh e2e "Prompt 21"
+
+  stage-09-properties:
+    name: "9 · propiedades"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: [stage-05-data, stage-06-contract, stage-07-api]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ops/scripts/run_stage.sh properties "Prompt 31"
+
+  stage-10-frontend:
+    name: "10 · frontend"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: stage-01-static
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run format:check
+      - run: npm test
+
+  stage-11-golden:
+    name: "11 · golden set"
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    needs: [stage-08-e2e, stage-09-properties]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: ${{ env.UV_VERSION }}
+      - run: uv sync --frozen
+      - name: arnés golden
+        run: |
+          if [ -f eval/run.py ]; then
+            uv run python -m eval.run --fail-on-regression
+          else
+            echo "Etapa 11 sin arnés todavía: el golden set llega en el Prompt 6 y el arnés en el 32."
+          fi

@@ -1,0 +1,108 @@
+[project]
+name = "carmen"
+version = "0.0.0"
+description = "Carmen: plataforma de gobierno y orquestación de agentes de Plenergy"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "coverage[toml]==7.10.7",
+    "detect-secrets==1.5.0",
+    "jsonschema==4.25.1",
+    "types-jsonschema==4.25.1.20251009",
+    "mypy==1.18.2",
+    "pre-commit==4.3.0",
+    "pytest==8.4.2",
+    "pytest-cov==7.0.0",
+    "ruff==0.14.0",
+]
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["api/src/carmen"]
+
+# --- Ruff (8.1): formateador y linter, reglas explícitas, sin excepciones por fichero ---
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["api/src", "api/tests", "ops/scripts"]
+extend-exclude = ["web", "docs"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # bugbear
+    "A",    # builtins
+    "C4",   # comprehensions
+    "SIM",  # simplify
+    "RUF",  # ruff
+    "PT",   # pytest style
+    "TID",  # tidy imports
+    "ANN",  # annotations
+    "BLE",  # blind except
+    "DTZ",  # datetimes con zona
+    "T20",  # sin print
+    "ERA",  # sin código comentado
+    "PTH",  # pathlib
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.isort]
+known-first-party = ["carmen"]
+
+# --- mypy (8.1): estricto sobre src, sin Any en firmas públicas ---
+[tool.mypy]
+python_version = "3.12"
+strict = true
+disallow_any_explicit = true
+disallow_any_unimported = true
+warn_unreachable = true
+mypy_path = "api/src"
+files = ["api/src", "ops/scripts"]
+
+# --- pytest (8.1): marcadores por capa ---
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["api/tests"]
+pythonpath = ["api/src"]
+addopts = ["-ra", "--strict-markers", "--strict-config", "--import-mode=importlib"]
+markers = [
+    "architecture: reglas de capa (etapa 1)",
+    "domain: dominio puro (etapa 2)",
+    "application: casos de uso con puertos simulados (etapa 3)",
+    "adapters: adaptadores con transporte simulado (etapa 4)",
+    "repositories: PostgreSQL real (etapa 5)",
+    "contract: contrato MCP contra el simulado (etapa 6)",
+    "api: API y SSE (etapa 7)",
+    "e2e: extremo a extremo con modelo simulado (etapa 8)",
+    "properties: baterías de propiedades (etapa 9)",
+    "golden: golden set (etapa 11)",
+    "bootstrap: configuración y composición",
+]
+
+# --- Cobertura (8.2): mínimos POR MÓDULO, no globales ---
+[tool.coverage.run]
+source = ["carmen"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+
+# Lo comprueba ops/scripts/check_coverage.py sobre coverage.json.
+# Un módulo que aún no tiene código se informa y no falla.
+[tool.carmen.coverage]
+default = 70
+modules = { "carmen/domain" = 95, "carmen/application/planning" = 95, "carmen/application/grounding" = 95, "carmen/application/orchestrator" = 90, "carmen/application/routing" = 90, "carmen/adapters/mcp" = 85 }

@@ -27,7 +27,7 @@ pytestmark = pytest.mark.domain
 @pytest.mark.parametrize(
     ("factory", "valid"),
     [
-        (AgentId, "vigia"),
+        (AgentId, "agent.zoho-desk"),
         (SystemId, "plen-data_2"),
         (PlanId, "pln_a1b2c3d4e5f6"),
         (StepId, "s12"),
@@ -49,9 +49,10 @@ def test_valid_identifiers_are_strings(factory: type[str], valid: str) -> None:
 @pytest.mark.parametrize(
     ("factory", "invalid"),
     [
-        (AgentId, "Vigia"),
-        (AgentId, "v"),
-        (AgentId, "a" * 33),
+        (AgentId, "vigia"),
+        (AgentId, "agent.Vigia"),
+        (AgentId, "agent.v"),
+        (AgentId, "agent." + "a" * 33),
         (SystemId, "1vigia"),
         (PlanId, "pln_short"),
         (PlanId, "pln_A1B2C3D4E5F6"),

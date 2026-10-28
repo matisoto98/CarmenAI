@@ -16,6 +16,7 @@ from typing import ClassVar, Final, Literal
 from carmen.domain.errors import ValidationError
 from carmen.domain.ids import CallId, FactId, MediaId, PassageId
 from carmen.domain.system import SystemId
+from carmen.domain.text import require_text
 from carmen.domain.time import Instant
 
 _MIME: Final = re.compile(r"^[a-z]+/[a-z0-9.+-]+$")
@@ -39,12 +40,6 @@ class Unit(StrEnum):
     LITERS = "liters"
 
 
-def _require_text(name: str, value: str) -> None:
-    if not value.strip():
-        msg = f"{name} no puede estar vacío"
-        raise ValidationError(msg)
-
-
 @dataclass(frozen=True, slots=True)
 class EntityRef:
     """Entidad a la que se refiere un hecho: tipo e identificador en el sistema de origen."""
@@ -54,8 +49,8 @@ class EntityRef:
     name: str | None = None
 
     def __post_init__(self) -> None:
-        _require_text("entity.type", self.type)
-        _require_text("entity.id", self.id)
+        require_text("entity.type", self.type)
+        require_text("entity.id", self.id)
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,8 +63,8 @@ class PeriodInterpreted:
     text: str
 
     def __post_init__(self) -> None:
-        _require_text("period.expression", self.expression)
-        _require_text("period.text", self.text)
+        require_text("period.expression", self.expression)
+        require_text("period.text", self.text)
         if self.end < self.start:
             msg = "el periodo termina antes de empezar"
             raise ValidationError(msg)
@@ -84,8 +79,8 @@ class Provenance:
     generated_at: Instant
 
     def __post_init__(self) -> None:
-        _require_text("provenance.tool_name", self.tool_name)
-        _require_text("provenance.catalog_version", self.catalog_version)
+        require_text("provenance.tool_name", self.tool_name)
+        require_text("provenance.catalog_version", self.catalog_version)
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,7 +100,7 @@ class EvidenceFact:
     period: PeriodInterpreted | None = None
 
     def __post_init__(self) -> None:
-        _require_text("label", self.label)
+        require_text("label", self.label)
         value: object = self.value  # puede llegar sin tipar desde el sobre MCP
         if isinstance(value, float) or not isinstance(value, Decimal | int | str | bool | None):
             msg = f"valor de hecho no admitido: {type(value).__name__}"
@@ -114,7 +109,7 @@ class EvidenceFact:
             msg = "el valor de un hecho debe ser finito"
             raise ValidationError(msg)
         if self.metric is not None:
-            _require_text("metric", self.metric)
+            require_text("metric", self.metric)
         object.__setattr__(self, "dimensions", MappingProxyType(dict(self.dimensions)))
 
     @property
@@ -149,9 +144,9 @@ class EvidencePassage:
     url: str | None = None
 
     def __post_init__(self) -> None:
-        _require_text("document_id", self.document_id)
-        _require_text("title", self.title)
-        _require_text("text", self.text)
+        require_text("document_id", self.document_id)
+        require_text("title", self.title)
+        require_text("text", self.text)
         if self.kind not in ("reference", "procedure", "warning", "definition"):
             msg = f"tipo de pasaje desconocido: {self.kind!r}"
             raise ValidationError(msg)
@@ -178,9 +173,9 @@ class EvidenceMedia:
     anchor: str | None = None
 
     def __post_init__(self) -> None:
-        _require_text("document_id", self.document_id)
-        _require_text("caption", self.caption)
-        _require_text("uri", self.uri)
+        require_text("document_id", self.document_id)
+        require_text("caption", self.caption)
+        require_text("uri", self.uri)
         if not _MIME.fullmatch(self.mime):
             msg = f"tipo MIME inválido: {self.mime!r}"
             raise ValidationError(msg)
@@ -209,10 +204,12 @@ class EvidenceReference:
 
 def require_numeric_fact(item: EvidenceItem) -> EvidenceFact:
     """Devuelve el hecho si es numérico. Un pasaje o un adjunto nunca respaldan una cifra."""
-    if not isinstance(item, EvidenceFact):
-        msg = f"se exige un hecho numérico y llegó evidencia de tipo {item.evidence_type}"
+    received: object = item  # un ModelOutput puede llegar aquí por error, nunca pasa
+    if not isinstance(received, EvidenceFact):
+        kind = getattr(received, "evidence_type", type(received).__name__)
+        msg = f"se exige un hecho numérico y llegó {kind}"
         raise ValidationError(msg)
-    if not item.is_numeric:
-        msg = f"el hecho {item.fact_id} no es numérico"
+    if not received.is_numeric:
+        msg = f"el hecho {received.fact_id} no es numérico"
         raise ValidationError(msg)
-    return item
+    return received

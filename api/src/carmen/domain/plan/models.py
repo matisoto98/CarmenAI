@@ -14,6 +14,7 @@ from types import MappingProxyType
 from typing import Final, Literal
 
 from carmen.domain.errors import InvalidPlanError, PlanIssue, ValidationError
+from carmen.domain.graph import topological_waves
 from carmen.domain.ids import AgentId, PlanId, StepId
 from carmen.domain.system import SystemId
 
@@ -209,21 +210,9 @@ class QueryPlan:
 
 
 def _waves(steps: tuple[PlanStep, ...]) -> tuple[tuple[StepId, ...], ...] | None:
-    """Orden topológico por niveles (Kahn). None si hay un ciclo."""
-    pending = {s.step_id: {d.step_id for d in s.depends_on} for s in steps}
-    done: set[StepId] = set()
-    waves: list[tuple[StepId, ...]] = []
-    while pending:
-        ready = sorted(
-            (sid for sid, deps in pending.items() if deps <= done), key=lambda s: s.number
-        )
-        if not ready:
-            return None
-        waves.append(tuple(ready))
-        done.update(ready)
-        for sid in ready:
-            del pending[sid]
-    return tuple(waves)
+    """Orden topológico por niveles. None si hay un ciclo."""
+    graph = {s.step_id: frozenset(d.step_id for d in s.depends_on) for s in steps}
+    return topological_waves(graph, lambda s: s.number)
 
 
 def _structural_issues(plan: QueryPlan) -> list[PlanIssue]:

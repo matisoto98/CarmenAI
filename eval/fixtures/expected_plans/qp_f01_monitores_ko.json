@@ -1,0 +1,28 @@
+{
+  "catalog_versions": {
+    "vigia": "2026-07-20"
+  },
+  "intent": "factual",
+  "limits": {
+    "max_repairs": 2,
+    "max_rounds": 1,
+    "max_tool_calls": 2
+  },
+  "plan_id": "pln_a1b2c3d4e5f6",
+  "schema_version": "1.0",
+  "steps": [
+    {
+      "agent": "agent.vigia",
+      "arguments": {
+        "metric": "monitores_ko",
+        "period": "ahora"
+      },
+      "step_id": "s1",
+      "system": "vigia",
+      "tool": "query_metric"
+    }
+  ],
+  "systems": [
+    "vigia"
+  ]
+}

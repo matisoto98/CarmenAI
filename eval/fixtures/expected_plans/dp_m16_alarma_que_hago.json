@@ -1,0 +1,58 @@
+{
+  "budgets": {
+    "max_agents": 3,
+    "max_cost_eur": 0,
+    "max_tokens": 12000,
+    "max_wall_ms": 20000
+  },
+  "composition": {
+    "kind": "blocks",
+    "tasks": [
+      "t1",
+      "t2"
+    ]
+  },
+  "plan_id": "dpl_16a1b2c3d4e5",
+  "policy_version": "pol-2026-07-21",
+  "principal_id": "usr_a91f",
+  "response_mode": "DELEGATE_MULTI",
+  "schema_version": "1.0",
+  "tasks": [
+    {
+      "agent_id": "agent.vigia",
+      "budgets": {
+        "max_cost_eur": 0,
+        "max_tokens": 6000,
+        "max_wall_ms": 10000
+      },
+      "delegated_identity": "idr_7f3a9c1e2b40",
+      "entities": {
+        "estacion": "Getafe"
+      },
+      "expects": "facts",
+      "locale": "es",
+      "objective": "alarma abierta en Getafe y su contexto",
+      "task_id": "t1"
+    },
+    {
+      "agent_id": "agent.plenmind",
+      "budgets": {
+        "max_cost_eur": 0,
+        "max_tokens": 6000,
+        "max_wall_ms": 10000
+      },
+      "delegated_identity": "idr_7f3a9c1e2b40",
+      "depends_on": [
+        "t1"
+      ],
+      "entities": {
+        "estacion": "Getafe"
+      },
+      "expects": "passages",
+      "locale": "es",
+      "objective": "procedimiento aprobado y vigente para la alarma de t1",
+      "task_id": "t2"
+    }
+  ],
+  "turn_id": "trn_16a1b2c3"
+}

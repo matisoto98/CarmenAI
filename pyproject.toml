@@ -17,6 +17,8 @@ dev = [
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
     "ruff==0.14.0",
+    "pyyaml==6.0.3",
+    "types-pyyaml==6.0.12.20250915",
 ]
 
 [build-system]
@@ -71,12 +73,12 @@ disallow_any_unimported = true
 warn_unreachable = true
 mypy_path = ["api/src", "api/tests"]
 # Las pruebas antiguas pasan tipos erróneos a propósito; se tipa el apoyo de pruebas (Prompt 5).
-files = ["api/src", "ops/scripts", "api/tests/support"]
+files = ["api/src", "ops/scripts", "api/tests/support", "eval/tests"]
 
 # --- pytest (8.1): marcadores por capa ---
 [tool.pytest.ini_options]
 minversion = "8.0"
-testpaths = ["api/tests"]
+testpaths = ["api/tests", "eval/tests"]
 pythonpath = ["api/src", "api/tests"]
 addopts = ["-ra", "--strict-markers", "--strict-config", "--import-mode=importlib"]
 markers = [

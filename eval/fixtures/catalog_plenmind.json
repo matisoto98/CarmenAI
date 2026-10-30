@@ -1,0 +1,209 @@
+{
+  "schema_version": "1.0",
+  "system_id": "plenmind",
+  "catalog_version": "2026-07-18",
+  "provisional": true,
+  "fuente": "Herramientas documentales de 6.9.4 y query_metric del ejemplo multisistema de 6.2.3 del Documento Maestro v4.8. Se sustituye por el catálogo real cuando el agente pase de DISCOVERED.",
+  "tools": [
+    {
+      "name": "search_documents",
+      "description": "Búsqueda semántica sobre el corpus documental, con filtros por tipo, área y vigencia.",
+      "result_kind": "passages",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 500
+          },
+          "tipo": {
+            "enum": [
+              "manual",
+              "runbook",
+              "procedimiento"
+            ]
+          },
+          "area": {
+            "type": "string",
+            "minLength": 2
+          },
+          "solo_vigentes": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_document_section",
+      "description": "Devuelve la sección completa de un documento identificado.",
+      "result_kind": "passages",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,4}-[0-9]{3,5}$"
+          },
+          "section": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "document_id",
+          "section"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_procedure",
+      "description": "Devuelve el runbook completo para resolver un problema. Úsala cuando el usuario pregunte CÓMO hacer o resolver algo. NO la uses para consultar el estado de un equipo: eso es query_metric de otro sistema.",
+      "result_kind": "passages",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,4}-[0-9]{3,5}$"
+          },
+          "problema": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_procedures",
+      "description": "Procedimientos disponibles para un problema o un equipo.",
+      "result_kind": "passages",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "problema": {
+            "type": "string",
+            "minLength": 3
+          },
+          "equipo": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_media",
+      "description": "Referencia autenticada a un diagrama o adjunto. Carmen lo adjunta con su descripción y nunca lo describe.",
+      "result_kind": "media",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "media_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "media_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "glossary",
+      "description": "Definición canónica de un término del dominio documental.",
+      "result_kind": "passages",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR",
+        "AUDITOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "required": [
+          "term"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "query_metric",
+      "description": "Métricas de uso del sistema documental: consultas y disponibilidad del servicio en un periodo.",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "enum": [
+              "consultas",
+              "disponibilidad"
+            ]
+          },
+          "period": {
+            "enum": [
+              "ahora",
+              "hoy",
+              "7d",
+              "30d",
+              "90d",
+              "mes_actual",
+              "mes_anterior"
+            ]
+          }
+        },
+        "required": [
+          "metric",
+          "period"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

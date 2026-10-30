@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/eval/catalog.schema.json",
+  "title": "Catálogo de herramientas MCP de un sistema, como fixture de evaluación (6.9.4)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_id",
+    "catalog_version",
+    "provisional",
+    "fuente",
+    "tools"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "system_id": {
+      "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/systemId"
+    },
+    "catalog_version": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "provisional": {
+      "type": "boolean"
+    },
+    "fuente": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/tool"
+      }
+    }
+  },
+  "$defs": {
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "description",
+        "result_kind",
+        "roles",
+        "input_schema"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,47}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10
+        },
+        "result_kind": {
+          "enum": [
+            "facts",
+            "passages",
+            "media",
+            "mixed"
+          ]
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/role"
+          }
+        },
+        "input_schema": {
+          "type": "object",
+          "required": [
+            "type",
+            "properties",
+            "additionalProperties"
+          ],
+          "properties": {
+            "type": {
+              "const": "object"
+            },
+            "properties": {
+              "type": "object"
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {
+              "const": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

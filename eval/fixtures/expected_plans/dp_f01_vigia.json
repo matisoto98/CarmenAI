@@ -1,0 +1,38 @@
+{
+  "budgets": {
+    "max_agents": 3,
+    "max_cost_eur": 0,
+    "max_tokens": 6000,
+    "max_wall_ms": 10000
+  },
+  "composition": {
+    "kind": "single",
+    "tasks": [
+      "t1"
+    ]
+  },
+  "plan_id": "dpl_f01a1b2c3d4e",
+  "policy_version": "pol-2026-07-21",
+  "principal_id": "usr_a91f",
+  "response_mode": "DELEGATE_SINGLE",
+  "schema_version": "1.0",
+  "tasks": [
+    {
+      "agent_id": "agent.vigia",
+      "budgets": {
+        "max_cost_eur": 0,
+        "max_tokens": 6000,
+        "max_wall_ms": 10000
+      },
+      "delegated_identity": "idr_7f3a9c1e2b40",
+      "entities": {
+        "periodo": "ahora"
+      },
+      "expects": "facts",
+      "locale": "es",
+      "objective": "monitores en KO de toda la red, ahora",
+      "task_id": "t1"
+    }
+  ],
+  "turn_id": "trn_f01a1b2c"
+}

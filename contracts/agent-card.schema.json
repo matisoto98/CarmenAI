@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/agent-card.schema.json",
+  "title": "AgentCard",
+  "description": "Ficha del agente (5.14.3): lo único que Carmen puede usar para hablar de él. El AgentRegistry de 7.10 es una lista de estas fichas. La raíz añade schema_version al contrato (6.12.9); embebido en otro contrato se usa $defs/agentCard sin versión.",
+  "type": "object",
+  "$ref": "#/$defs/agentCard",
+  "required": [
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "lifecycle": {
+      "enum": [
+        "DISCOVERED",
+        "COMPATIBLE",
+        "CERTIFIED",
+        "QUARANTINED"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "PUBLIC_CATALOG",
+        "DISCOVERABLE",
+        "AUTHORIZED_ONLY",
+        "HIDDEN"
+      ]
+    },
+    "connectivity": {
+      "enum": [
+        "INTERNAL_ONLY",
+        "EXTERNAL_GOVERNED",
+        "HYBRID_GOVERNED"
+      ]
+    },
+    "slo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "p95_ms",
+        "availability"
+      ],
+      "properties": {
+        "p95_ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "availability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_tokens_per_run",
+        "max_cost_per_run_eur",
+        "max_wall_ms"
+      ],
+      "properties": {
+        "max_tokens_per_run": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_cost_per_run_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        "max_wall_ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "agentCard": {
+      "type": "object",
+      "required": [
+        "agent_id",
+        "version",
+        "display_name",
+        "owner",
+        "status",
+        "connectivity",
+        "visibility",
+        "safe_description",
+        "public_capabilities",
+        "routing_description",
+        "allowed_actions",
+        "scopes",
+        "entities_exposed",
+        "mcp_bindings",
+        "provider_bindings",
+        "slo",
+        "budgets",
+        "golden_set",
+        "kill_switch"
+      ],
+      "properties": {
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "display_name": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "owner": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "status": {
+          "$ref": "#/$defs/lifecycle"
+        },
+        "connectivity": {
+          "$ref": "#/$defs/connectivity"
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        },
+        "safe_description": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "public_capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/text"
+          }
+        },
+        "routing_description": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "const": "read"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "v1 es de solo lectura: write no se admite (invariante 5)."
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/dottedId"
+          },
+          "uniqueItems": true
+        },
+        "entities_exposed": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/text"
+          }
+        },
+        "mcp_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/mcpServerId"
+          },
+          "uniqueItems": true
+        },
+        "provider_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/providerId"
+          },
+          "uniqueItems": true
+        },
+        "slo": {
+          "$ref": "#/$defs/slo"
+        },
+        "budgets": {
+          "$ref": "#/$defs/budgets"
+        },
+        "golden_set": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "kill_switch": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

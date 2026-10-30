@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/agent-task.schema.json",
+  "title": "AgentTask",
+  "description": "Lo que Carmen encarga a UN agente (6.12.4). Autocontenido: sin herramientas, sin otros tasks salvo depends_on y sin credenciales; la identidad delegada es una referencia. La raíz añade schema_version al contrato (6.12.9); embebido en otro contrato se usa $defs/agentTask sin versión.",
+  "type": "object",
+  "$ref": "#/$defs/agentTask",
+  "required": [
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "expects": {
+      "enum": [
+        "facts",
+        "passages",
+        "media",
+        "mixed"
+      ]
+    },
+    "taskBudgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_wall_ms",
+        "max_tokens",
+        "max_cost_eur"
+      ],
+      "properties": {
+        "max_wall_ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_tokens": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_cost_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        }
+      }
+    },
+    "agentTask": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "agent_id",
+        "objective",
+        "entities",
+        "expects",
+        "locale",
+        "budgets",
+        "delegated_identity"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/$defs/taskId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "objective": {
+          "type": "string",
+          "pattern": "^(?![\\s\\S]*\\b[a-z][a-z0-9]*_[a-z0-9_]+\\b)(?![\\s\\S]*\\w\\(\\))[\\s\\S]*\\S[\\s\\S]*$",
+          "description": "En lenguaje de dominio: sin nombres de herramienta (ADR-044)."
+        },
+        "entities": {
+          "type": "object",
+          "propertyNames": {
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "common.schema.json#/$defs/text"
+          }
+        },
+        "expects": {
+          "$ref": "#/$defs/expects"
+        },
+        "locale": {
+          "$ref": "common.schema.json#/$defs/locale"
+        },
+        "budgets": {
+          "$ref": "#/$defs/taskBudgets"
+        },
+        "delegated_identity": {
+          "$ref": "common.schema.json#/$defs/delegatedIdentityRef"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/taskId"
+          },
+          "uniqueItems": true
+        },
+        "optional": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}

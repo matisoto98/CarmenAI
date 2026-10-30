@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/evidence.schema.json",
+  "title": "EvidenceItem",
+  "description": "Evidencia: unión discriminada por type de hecho, pasaje y adjunto (6.3, 6.9.2). Un ModelOutput no es evidencia y no cabe aquí.",
+  "oneOf": [
+    { "$ref": "#/$defs/fact" },
+    { "$ref": "#/$defs/passage" },
+    { "$ref": "#/$defs/media" }
+  ],
+  "$defs": {
+    "unit": {
+      "enum": ["count", "percent", "ratio", "ms", "seconds", "minutes", "hours", "days", "eur", "liters"]
+    },
+    "entityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "$ref": "common.schema.json#/$defs/text" },
+        "id": { "$ref": "common.schema.json#/$defs/text" },
+        "name": { "type": "string" }
+      }
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expression", "from", "to", "text"],
+      "properties": {
+        "expression": { "$ref": "common.schema.json#/$defs/text" },
+        "from": { "$ref": "common.schema.json#/$defs/instant" },
+        "to": { "$ref": "common.schema.json#/$defs/instant" },
+        "text": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_name", "catalog_version", "generated_at"],
+      "properties": {
+        "tool_name": { "$ref": "common.schema.json#/$defs/text" },
+        "catalog_version": { "$ref": "common.schema.json#/$defs/text" },
+        "generated_at": { "$ref": "common.schema.json#/$defs/instant" }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "fact_id", "call_id", "system_id", "label", "value", "provenance"],
+      "properties": {
+        "type": { "const": "fact" },
+        "fact_id": { "$ref": "common.schema.json#/$defs/localId" },
+        "call_id": { "$ref": "common.schema.json#/$defs/callId" },
+        "system_id": { "$ref": "common.schema.json#/$defs/systemId" },
+        "metric": { "$ref": "common.schema.json#/$defs/text" },
+        "label": { "$ref": "common.schema.json#/$defs/text" },
+        "value": { "type": ["number", "string", "boolean", "null"] },
+        "unit": { "$ref": "#/$defs/unit" },
+        "entity": { "$ref": "#/$defs/entityRef" },
+        "dimensions": { "type": "object", "additionalProperties": { "type": "string" } },
+        "period": { "$ref": "#/$defs/period" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "passageKind": { "enum": ["reference", "procedure", "warning", "definition"] },
+    "passage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "passage_id",
+        "call_id",
+        "system_id",
+        "document_id",
+        "title",
+        "text",
+        "kind",
+        "relevance"
+      ],
+      "properties": {
+        "type": { "const": "passage" },
+        "passage_id": { "$ref": "common.schema.json#/$defs/localId" },
+        "call_id": { "$ref": "common.schema.json#/$defs/callId" },
+        "system_id": { "$ref": "common.schema.json#/$defs/systemId" },
+        "document_id": { "$ref": "common.schema.json#/$defs/text" },
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "section": { "type": "string" },
+        "anchor": { "type": "string" },
+        "text": { "$ref": "common.schema.json#/$defs/text" },
+        "kind": { "$ref": "#/$defs/passageKind" },
+        "doc_version": { "type": "string" },
+        "updated_at": { "$ref": "common.schema.json#/$defs/instant" },
+        "url": { "type": "string" },
+        "relevance": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "if": { "properties": { "kind": { "const": "procedure" } } },
+      "then": { "required": ["updated_at"] }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "media_id",
+        "call_id",
+        "system_id",
+        "document_id",
+        "mime",
+        "caption",
+        "uri"
+      ],
+      "properties": {
+        "type": { "const": "media" },
+        "media_id": { "$ref": "common.schema.json#/$defs/localId" },
+        "call_id": { "$ref": "common.schema.json#/$defs/callId" },
+        "system_id": { "$ref": "common.schema.json#/$defs/systemId" },
+        "document_id": { "$ref": "common.schema.json#/$defs/text" },
+        "mime": { "type": "string", "pattern": "^[a-z]+/[a-z0-9.+-]+$" },
+        "caption": { "$ref": "common.schema.json#/$defs/text" },
+        "uri": { "type": "string", "pattern": "^(?![dD][aA][tT][aA]:)\\S+$" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "anchor": { "type": "string" }
+      }
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["call_id", "fact_id"],
+      "properties": {
+        "call_id": { "$ref": "common.schema.json#/$defs/callId" },
+        "fact_id": { "$ref": "common.schema.json#/$defs/localId" }
+      }
+    },
+    "textSpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "groundingClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "text_span", "raw_value", "normalized", "supported_by", "verdict"],
+      "properties": {
+        "claim_id": { "$ref": "common.schema.json#/$defs/localId" },
+        "text_span": { "$ref": "#/$defs/textSpan" },
+        "raw_value": { "$ref": "common.schema.json#/$defs/text" },
+        "normalized": { "type": ["number", "null"] },
+        "supported_by": {
+          "oneOf": [{ "$ref": "#/$defs/evidenceReference" }, { "type": "null" }]
+        },
+        "verdict": { "enum": ["supported", "unsupported", "whitelisted"] },
+        "reason": { "type": ["string", "null"] }
+      }
+    },
+    "groundingResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ok", "checked", "claims", "unsupported"],
+      "properties": {
+        "ok": { "type": "boolean" },
+        "checked": { "type": "integer", "minimum": 0 },
+        "claims": { "type": "array", "items": { "$ref": "#/$defs/groundingClaim" } },
+        "unsupported": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/localId" }
+        }
+      }
+    }
+  }
+}

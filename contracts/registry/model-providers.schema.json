@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/registry/model-providers.schema.json",
+  "title": "ModelProviderRegistry",
+  "description": "Proveedores de modelo, internos y externos, con región, retención y contrato (5.15.4, 7.10). Un proveedor NO es una fuente de Internet.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "providers"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "../common.schema.json#/$defs/schemaVersion"
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/provider"
+      }
+    }
+  },
+  "$defs": {
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "region",
+        "models",
+        "retention_days",
+        "active"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "../common.schema.json#/$defs/providerId"
+        },
+        "kind": {
+          "enum": [
+            "internal",
+            "external"
+          ]
+        },
+        "region": {
+          "$ref": "../common.schema.json#/$defs/text"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/text"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "retention_days": {
+          "$ref": "../common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "contract_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Contrato y DPA; obligatorio para un proveedor externo activo."
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "external"
+              },
+              "active": {
+                "const": true
+              }
+            },
+            "required": [
+              "kind",
+              "active"
+            ]
+          },
+          "then": {
+            "required": [
+              "contract_ref"
+            ],
+            "properties": {
+              "contract_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

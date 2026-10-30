@@ -1,0 +1,490 @@
+{
+  "schema": "mcp-servers.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "servers": [
+        {
+          "id": "vigia",
+          "display_name": "VigIA",
+          "routing_description": "Monitorización de la red de estaciones de servicio: alarmas, monitores, estaciones, incidencias, SLA y anomalías.",
+          "transport": {
+            "kind": "streamable-http",
+            "url": "https://vigia.plenergy.local:8443/mcp",
+            "tls": {
+              "client_cert": "/etc/carmen/certs/carmen.crt",
+              "client_key": "/etc/carmen/certs/carmen.key",
+              "ca_bundle": "/etc/carmen/certs/plenergy-ca.crt",
+              "verify": true
+            }
+          },
+          "identity": {
+            "audience": "api://vigia-mcp",
+            "scopes": [
+              ".default"
+            ]
+          },
+          "timeouts": {
+            "connect_ms": 3000,
+            "call_ms": 25000
+          },
+          "limits": {
+            "max_concurrency": 4,
+            "max_rows": 500
+          },
+          "contract": {
+            "min_envelope_version": "1.0"
+          },
+          "capabilities": [
+            "read"
+          ],
+          "content": [
+            "facts"
+          ],
+          "enabled": true
+        },
+        {
+          "id": "vigia-mock",
+          "display_name": "VigIA (simulado)",
+          "routing_description": "Igual que VigIA, con dataset sintético.",
+          "transport": {
+            "kind": "streamable-http",
+            "url": "http://mcp-mock:9000/mcp"
+          },
+          "identity": {
+            "audience": null,
+            "scopes": []
+          },
+          "timeouts": {
+            "connect_ms": 1000,
+            "call_ms": 5000
+          },
+          "limits": {
+            "max_concurrency": 8,
+            "max_rows": 500
+          },
+          "contract": {
+            "min_envelope_version": "1.0"
+          },
+          "capabilities": [
+            "read"
+          ],
+          "content": [
+            "facts",
+            "passages",
+            "media"
+          ],
+          "enabled": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "why": "capacidad write en v1",
+      "doc": {
+        "schema_version": "1.0",
+        "servers": [
+          {
+            "id": "vigia",
+            "display_name": "VigIA",
+            "routing_description": "Monitorización de la red de estaciones de servicio: alarmas, monitores, estaciones, incidencias, SLA y anomalías.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "https://vigia.plenergy.local:8443/mcp",
+              "tls": {
+                "client_cert": "/etc/carmen/certs/carmen.crt",
+                "client_key": "/etc/carmen/certs/carmen.key",
+                "ca_bundle": "/etc/carmen/certs/plenergy-ca.crt",
+                "verify": true
+              }
+            },
+            "identity": {
+              "audience": "api://vigia-mcp",
+              "scopes": [
+                ".default"
+              ]
+            },
+            "timeouts": {
+              "connect_ms": 3000,
+              "call_ms": 25000
+            },
+            "limits": {
+              "max_concurrency": 4,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read",
+              "write"
+            ],
+            "content": [
+              "facts"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "vigia-mock",
+            "display_name": "VigIA (simulado)",
+            "routing_description": "Igual que VigIA, con dataset sintético.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "http://mcp-mock:9000/mcp"
+            },
+            "identity": {
+              "audience": null,
+              "scopes": []
+            },
+            "timeouts": {
+              "connect_ms": 1000,
+              "call_ms": 5000
+            },
+            "limits": {
+              "max_concurrency": 8,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts",
+              "passages",
+              "media"
+            ],
+            "enabled": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "content vacío",
+      "doc": {
+        "schema_version": "1.0",
+        "servers": [
+          {
+            "id": "vigia",
+            "display_name": "VigIA",
+            "routing_description": "Monitorización de la red de estaciones de servicio: alarmas, monitores, estaciones, incidencias, SLA y anomalías.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "https://vigia.plenergy.local:8443/mcp",
+              "tls": {
+                "client_cert": "/etc/carmen/certs/carmen.crt",
+                "client_key": "/etc/carmen/certs/carmen.key",
+                "ca_bundle": "/etc/carmen/certs/plenergy-ca.crt",
+                "verify": true
+              }
+            },
+            "identity": {
+              "audience": "api://vigia-mcp",
+              "scopes": [
+                ".default"
+              ]
+            },
+            "timeouts": {
+              "connect_ms": 3000,
+              "call_ms": 25000
+            },
+            "limits": {
+              "max_concurrency": 4,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [],
+            "enabled": true
+          },
+          {
+            "id": "vigia-mock",
+            "display_name": "VigIA (simulado)",
+            "routing_description": "Igual que VigIA, con dataset sintético.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "http://mcp-mock:9000/mcp"
+            },
+            "identity": {
+              "audience": null,
+              "scopes": []
+            },
+            "timeouts": {
+              "connect_ms": 1000,
+              "call_ms": 5000
+            },
+            "limits": {
+              "max_concurrency": 8,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts",
+              "passages",
+              "media"
+            ],
+            "enabled": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "sin servidores",
+      "doc": {
+        "schema_version": "1.0",
+        "servers": []
+      }
+    },
+    {
+      "why": "identificador mal formado",
+      "doc": {
+        "schema_version": "1.0",
+        "servers": [
+          {
+            "id": "VigIA",
+            "display_name": "VigIA",
+            "routing_description": "Monitorización de la red de estaciones de servicio: alarmas, monitores, estaciones, incidencias, SLA y anomalías.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "https://vigia.plenergy.local:8443/mcp",
+              "tls": {
+                "client_cert": "/etc/carmen/certs/carmen.crt",
+                "client_key": "/etc/carmen/certs/carmen.key",
+                "ca_bundle": "/etc/carmen/certs/plenergy-ca.crt",
+                "verify": true
+              }
+            },
+            "identity": {
+              "audience": "api://vigia-mcp",
+              "scopes": [
+                ".default"
+              ]
+            },
+            "timeouts": {
+              "connect_ms": 3000,
+              "call_ms": 25000
+            },
+            "limits": {
+              "max_concurrency": 4,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "vigia-mock",
+            "display_name": "VigIA (simulado)",
+            "routing_description": "Igual que VigIA, con dataset sintético.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "http://mcp-mock:9000/mcp"
+            },
+            "identity": {
+              "audience": null,
+              "scopes": []
+            },
+            "timeouts": {
+              "connect_ms": 1000,
+              "call_ms": 5000
+            },
+            "limits": {
+              "max_concurrency": 8,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts",
+              "passages",
+              "media"
+            ],
+            "enabled": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "max_rows por encima de 500",
+      "doc": {
+        "schema_version": "1.0",
+        "servers": [
+          {
+            "id": "vigia",
+            "display_name": "VigIA",
+            "routing_description": "Monitorización de la red de estaciones de servicio: alarmas, monitores, estaciones, incidencias, SLA y anomalías.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "https://vigia.plenergy.local:8443/mcp",
+              "tls": {
+                "client_cert": "/etc/carmen/certs/carmen.crt",
+                "client_key": "/etc/carmen/certs/carmen.key",
+                "ca_bundle": "/etc/carmen/certs/plenergy-ca.crt",
+                "verify": true
+              }
+            },
+            "identity": {
+              "audience": "api://vigia-mcp",
+              "scopes": [
+                ".default"
+              ]
+            },
+            "timeouts": {
+              "connect_ms": 3000,
+              "call_ms": 25000
+            },
+            "limits": {
+              "max_concurrency": 4,
+              "max_rows": 1000
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "vigia-mock",
+            "display_name": "VigIA (simulado)",
+            "routing_description": "Igual que VigIA, con dataset sintético.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "http://mcp-mock:9000/mcp"
+            },
+            "identity": {
+              "audience": null,
+              "scopes": []
+            },
+            "timeouts": {
+              "connect_ms": 1000,
+              "call_ms": 5000
+            },
+            "limits": {
+              "max_concurrency": 8,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts",
+              "passages",
+              "media"
+            ],
+            "enabled": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "transporte desconocido",
+      "doc": {
+        "schema_version": "1.0",
+        "servers": [
+          {
+            "id": "vigia",
+            "display_name": "VigIA",
+            "routing_description": "Monitorización de la red de estaciones de servicio: alarmas, monitores, estaciones, incidencias, SLA y anomalías.",
+            "transport": {
+              "kind": "stdio",
+              "url": "https://vigia.plenergy.local:8443/mcp",
+              "tls": {
+                "client_cert": "/etc/carmen/certs/carmen.crt",
+                "client_key": "/etc/carmen/certs/carmen.key",
+                "ca_bundle": "/etc/carmen/certs/plenergy-ca.crt",
+                "verify": true
+              }
+            },
+            "identity": {
+              "audience": "api://vigia-mcp",
+              "scopes": [
+                ".default"
+              ]
+            },
+            "timeouts": {
+              "connect_ms": 3000,
+              "call_ms": 25000
+            },
+            "limits": {
+              "max_concurrency": 4,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "vigia-mock",
+            "display_name": "VigIA (simulado)",
+            "routing_description": "Igual que VigIA, con dataset sintético.",
+            "transport": {
+              "kind": "streamable-http",
+              "url": "http://mcp-mock:9000/mcp"
+            },
+            "identity": {
+              "audience": null,
+              "scopes": []
+            },
+            "timeouts": {
+              "connect_ms": 1000,
+              "call_ms": 5000
+            },
+            "limits": {
+              "max_concurrency": 8,
+              "max_rows": 500
+            },
+            "contract": {
+              "min_envelope_version": "1.0"
+            },
+            "capabilities": [
+              "read"
+            ],
+            "content": [
+              "facts",
+              "passages",
+              "media"
+            ],
+            "enabled": false
+          }
+        ]
+      }
+    }
+  ]
+}

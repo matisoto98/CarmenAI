@@ -1,0 +1,171 @@
+{
+  "schema": "registry/egress-policy.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "default": "deny",
+      "policies": [
+        {
+          "policy_id": "egress.legal-sources",
+          "agents": [
+            "agent.plenlegal"
+          ],
+          "allowlist_domains": [
+            "boe.es",
+            "eur-lex.europa.eu"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "max_bytes": 5000000,
+          "max_requests_per_run": 12,
+          "max_cost_per_run_eur": 0.5,
+          "allowed_classifications": [
+            "PUBLICO"
+          ],
+          "redactions": [
+            "nombres_de_empleado",
+            "identificadores_de_contrato"
+          ],
+          "retention_days": 30,
+          "region": "eu"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "why": "default allow",
+      "doc": {
+        "schema_version": "1.0",
+        "default": "allow",
+        "policies": [
+          {
+            "policy_id": "egress.legal-sources",
+            "agents": [
+              "agent.plenlegal"
+            ],
+            "allowlist_domains": [
+              "boe.es",
+              "eur-lex.europa.eu"
+            ],
+            "methods": [
+              "GET"
+            ],
+            "max_bytes": 5000000,
+            "max_requests_per_run": 12,
+            "max_cost_per_run_eur": 0.5,
+            "allowed_classifications": [
+              "PUBLICO"
+            ],
+            "redactions": [
+              "nombres_de_empleado",
+              "identificadores_de_contrato"
+            ],
+            "retention_days": 30,
+            "region": "eu"
+          }
+        ]
+      }
+    },
+    {
+      "why": "método POST",
+      "doc": {
+        "schema_version": "1.0",
+        "default": "deny",
+        "policies": [
+          {
+            "policy_id": "egress.legal-sources",
+            "agents": [
+              "agent.plenlegal"
+            ],
+            "allowlist_domains": [
+              "boe.es",
+              "eur-lex.europa.eu"
+            ],
+            "methods": [
+              "GET",
+              "POST"
+            ],
+            "max_bytes": 5000000,
+            "max_requests_per_run": 12,
+            "max_cost_per_run_eur": 0.5,
+            "allowed_classifications": [
+              "PUBLICO"
+            ],
+            "redactions": [
+              "nombres_de_empleado",
+              "identificadores_de_contrato"
+            ],
+            "retention_days": 30,
+            "region": "eu"
+          }
+        ]
+      }
+    },
+    {
+      "why": "allowlist vacía",
+      "doc": {
+        "schema_version": "1.0",
+        "default": "deny",
+        "policies": [
+          {
+            "policy_id": "egress.legal-sources",
+            "agents": [
+              "agent.plenlegal"
+            ],
+            "allowlist_domains": [],
+            "methods": [
+              "GET"
+            ],
+            "max_bytes": 5000000,
+            "max_requests_per_run": 12,
+            "max_cost_per_run_eur": 0.5,
+            "allowed_classifications": [
+              "PUBLICO"
+            ],
+            "redactions": [
+              "nombres_de_empleado",
+              "identificadores_de_contrato"
+            ],
+            "retention_days": 30,
+            "region": "eu"
+          }
+        ]
+      }
+    },
+    {
+      "why": "IP literal en la allowlist",
+      "doc": {
+        "schema_version": "1.0",
+        "default": "deny",
+        "policies": [
+          {
+            "policy_id": "egress.legal-sources",
+            "agents": [
+              "agent.plenlegal"
+            ],
+            "allowlist_domains": [
+              "169.254.169.254"
+            ],
+            "methods": [
+              "GET"
+            ],
+            "max_bytes": 5000000,
+            "max_requests_per_run": 12,
+            "max_cost_per_run_eur": 0.5,
+            "allowed_classifications": [
+              "PUBLICO"
+            ],
+            "redactions": [
+              "nombres_de_empleado",
+              "identificadores_de_contrato"
+            ],
+            "retention_days": 30,
+            "region": "eu"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/conversation-turn.schema.json",
+  "title": "ConversationTurn",
+  "description": "Un turno completo (6.12.8): la unidad de registro, también cuando no se delega. SUPERVISOR_DIRECT, CLARIFY y REFUSE no tocan ningún agente (ck_direct_sin_agentes). La raíz añade schema_version al contrato (6.12.9); embebido en otro contrato se usa $defs/conversationTurn sin versión.",
+  "type": "object",
+  "$ref": "#/$defs/conversationTurn",
+  "required": [
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "status": {
+      "enum": [
+        "completed",
+        "partial",
+        "rejected",
+        "failed",
+        "cancelled",
+        "no_data"
+      ]
+    },
+    "tokenUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "tokens_in": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "tokens_out": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "conversationTurn": {
+      "type": "object",
+      "required": [
+        "turn_id",
+        "conversation_id",
+        "principal_id",
+        "question",
+        "response_mode",
+        "policy_version",
+        "status"
+      ],
+      "properties": {
+        "turn_id": {
+          "$ref": "common.schema.json#/$defs/turnId"
+        },
+        "conversation_id": {
+          "$ref": "common.schema.json#/$defs/conversationId"
+        },
+        "principal_id": {
+          "$ref": "common.schema.json#/$defs/principalId"
+        },
+        "question": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "response_mode": {
+          "$ref": "common.schema.json#/$defs/responseMode"
+        },
+        "policy_version": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "agents_used": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/agentId"
+          },
+          "uniqueItems": true
+        },
+        "delegation_plan": {
+          "oneOf": [
+            {
+              "$ref": "delegation-plan.schema.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "agent-result.schema.json#/$defs/agentRun"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "evidence.schema.json"
+          }
+        },
+        "grounding": {
+          "oneOf": [
+            {
+              "$ref": "evidence.schema.json#/$defs/groundingResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "agent-result.schema.json#/$defs/approvalRecord"
+          }
+        },
+        "tokens": {
+          "$ref": "#/$defs/tokenUsage"
+        },
+        "cost_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        "latency_ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "missing_agents": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/agentId"
+          },
+          "uniqueItems": true
+        },
+        "redelegations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "response_mode": {
+                "enum": [
+                  "SUPERVISOR_DIRECT",
+                  "CLARIFY",
+                  "REFUSE"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "agents_used": {
+                "maxItems": 0
+              },
+              "delegation_plan": {
+                "type": "null"
+              },
+              "runs": {
+                "maxItems": 0
+              },
+              "missing_agents": {
+                "maxItems": 0
+              },
+              "redelegations": {
+                "const": 0
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "delegation_plan"
+            ],
+            "properties": {
+              "delegation_plan": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

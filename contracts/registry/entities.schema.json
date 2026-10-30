@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/registry/entities.schema.json",
+  "title": "EntityMap",
+  "description": "Mapa de entidades para cruzar agentes (6.11): config/entities.yaml. Sin mapeo declarado para un agente, sus filas no se cruzan. Las claves de mapeo son AgentId (ADR-045).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "entidades"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "../common.schema.json#/$defs/schemaVersion"
+    },
+    "entidades": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/entity"
+      }
+    }
+  },
+  "$defs": {
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identificador_canonico",
+        "mapeo"
+      ],
+      "properties": {
+        "identificador_canonico": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "formato": {
+          "type": "string",
+          "minLength": 1
+        },
+        "descripcion": {
+          "$ref": "../common.schema.json#/$defs/text"
+        },
+        "mapeo": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "../common.schema.json#/$defs/agentId"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/mapping"
+          }
+        }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "campo",
+        "via"
+      ],
+      "properties": {
+        "campo": {
+          "$ref": "../common.schema.json#/$defs/text"
+        },
+        "via": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z][a-z0-9_]{1,47}$"
+        }
+      }
+    }
+  }
+}

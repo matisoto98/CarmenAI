@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/mcp-servers.schema.json",
+  "title": "McpServerRegistry",
+  "description": "Registro de servidores MCP (7.5): config/mcp-servers.yaml. El id es el SystemId de los planes; los bindings lo nombran como mcp.<id> (ADR-045).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "servers"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "servers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/server" }
+    }
+  },
+  "$defs": {
+    "server": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "display_name",
+        "routing_description",
+        "transport",
+        "identity",
+        "timeouts",
+        "limits",
+        "contract",
+        "capabilities",
+        "content",
+        "enabled"
+      ],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/systemId" },
+        "display_name": { "$ref": "common.schema.json#/$defs/text" },
+        "routing_description": { "$ref": "common.schema.json#/$defs/text" },
+        "transport": { "$ref": "#/$defs/transport" },
+        "identity": { "$ref": "#/$defs/identity" },
+        "timeouts": { "$ref": "#/$defs/timeouts" },
+        "limits": { "$ref": "#/$defs/limits" },
+        "contract": { "$ref": "#/$defs/contract" },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "const": "read" },
+          "description": "write NO admitido en v1."
+        },
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["facts", "passages", "media"] }
+        },
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "transport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "url"],
+      "properties": {
+        "kind": { "enum": ["streamable-http"] },
+        "url": { "type": "string", "pattern": "^https?://\\S+$" },
+        "tls": { "$ref": "#/$defs/tls" }
+      }
+    },
+    "tls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["client_cert", "client_key", "ca_bundle", "verify"],
+      "properties": {
+        "client_cert": { "$ref": "common.schema.json#/$defs/text" },
+        "client_key": { "$ref": "common.schema.json#/$defs/text" },
+        "ca_bundle": { "$ref": "common.schema.json#/$defs/text" },
+        "verify": { "type": "boolean" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audience", "scopes"],
+      "properties": {
+        "audience": { "type": ["string", "null"] },
+        "scopes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "timeouts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["connect_ms", "call_ms"],
+      "properties": {
+        "connect_ms": { "type": "integer", "minimum": 1 },
+        "call_ms": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_concurrency", "max_rows"],
+      "properties": {
+        "max_concurrency": { "type": "integer", "minimum": 1 },
+        "max_rows": { "type": "integer", "minimum": 1, "maximum": 500 }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_envelope_version"],
+      "properties": {
+        "min_envelope_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" }
+      }
+    }
+  }
+}

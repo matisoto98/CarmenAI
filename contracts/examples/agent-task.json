@@ -1,0 +1,179 @@
+{
+  "schema": "agent-task.schema.json",
+  "valid": [
+    {
+      "task_id": "t1",
+      "agent_id": "agent.vigia",
+      "objective": "alarmas por estación del mes en curso, top 10",
+      "entities": {
+        "periodo": "mes_actual"
+      },
+      "expects": "facts",
+      "locale": "es",
+      "budgets": {
+        "max_wall_ms": 10000,
+        "max_tokens": 6000,
+        "max_cost_eur": 0.0
+      },
+      "delegated_identity": "idr_7f3a9c1e2b40",
+      "depends_on": [],
+      "optional": false,
+      "schema_version": "1.0"
+    },
+    {
+      "task_id": "t2",
+      "agent_id": "agent.plendata",
+      "objective": "margen por estación del mes en curso",
+      "entities": {
+        "periodo": "mes_actual"
+      },
+      "expects": "facts",
+      "locale": "es",
+      "budgets": {
+        "max_wall_ms": 10000,
+        "max_tokens": 6000,
+        "max_cost_eur": 0.0
+      },
+      "delegated_identity": "idr_7f3a9c1e2b40",
+      "depends_on": [
+        "t1"
+      ],
+      "optional": true,
+      "schema_version": "1.0"
+    }
+  ],
+  "invalid": [
+    {
+      "why": "sin schema_version en la raíz",
+      "doc": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "objective": "alarmas por estación del mes en curso, top 10",
+        "entities": {
+          "periodo": "mes_actual"
+        },
+        "expects": "facts",
+        "locale": "es",
+        "budgets": {
+          "max_wall_ms": 10000,
+          "max_tokens": 6000,
+          "max_cost_eur": 0.0
+        },
+        "delegated_identity": "idr_7f3a9c1e2b40",
+        "depends_on": [],
+        "optional": false
+      }
+    },
+    {
+      "why": "objetivo con nombre de herramienta",
+      "doc": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "objective": "usa build_dossier sobre Getafe",
+        "entities": {
+          "periodo": "mes_actual"
+        },
+        "expects": "facts",
+        "locale": "es",
+        "budgets": {
+          "max_wall_ms": 10000,
+          "max_tokens": 6000,
+          "max_cost_eur": 0.0
+        },
+        "delegated_identity": "idr_7f3a9c1e2b40",
+        "depends_on": [],
+        "optional": false,
+        "schema_version": "1.0"
+      }
+    },
+    {
+      "why": "objetivo con una llamada",
+      "doc": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "objective": "llama a run()",
+        "entities": {
+          "periodo": "mes_actual"
+        },
+        "expects": "facts",
+        "locale": "es",
+        "budgets": {
+          "max_wall_ms": 10000,
+          "max_tokens": 6000,
+          "max_cost_eur": 0.0
+        },
+        "delegated_identity": "idr_7f3a9c1e2b40",
+        "depends_on": [],
+        "optional": false,
+        "schema_version": "1.0"
+      }
+    },
+    {
+      "why": "campo prompt del supervisor",
+      "doc": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "objective": "alarmas por estación del mes en curso, top 10",
+        "entities": {
+          "periodo": "mes_actual"
+        },
+        "expects": "facts",
+        "locale": "es",
+        "budgets": {
+          "max_wall_ms": 10000,
+          "max_tokens": 6000,
+          "max_cost_eur": 0.0
+        },
+        "delegated_identity": "idr_7f3a9c1e2b40",
+        "depends_on": [],
+        "optional": false,
+        "schema_version": "1.0",
+        "supervisor_prompt": "Eres Carmen"
+      }
+    },
+    {
+      "why": "identidad como JWT",
+      "doc": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "objective": "alarmas por estación del mes en curso, top 10",
+        "entities": {
+          "periodo": "mes_actual"
+        },
+        "expects": "facts",
+        "locale": "es",
+        "budgets": {
+          "max_wall_ms": 10000,
+          "max_tokens": 6000,
+          "max_cost_eur": 0.0
+        },
+        "delegated_identity": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJ4In0.c2ln",
+        "depends_on": [],
+        "optional": false,
+        "schema_version": "1.0"
+      }
+    },
+    {
+      "why": "expects desconocido",
+      "doc": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "objective": "alarmas por estación del mes en curso, top 10",
+        "entities": {
+          "periodo": "mes_actual"
+        },
+        "expects": "texto",
+        "locale": "es",
+        "budgets": {
+          "max_wall_ms": 10000,
+          "max_tokens": 6000,
+          "max_cost_eur": 0.0
+        },
+        "delegated_identity": "idr_7f3a9c1e2b40",
+        "depends_on": [],
+        "optional": false,
+        "schema_version": "1.0"
+      }
+    }
+  ]
+}

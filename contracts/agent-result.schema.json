@@ -1,0 +1,542 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/agent-result.schema.json",
+  "title": "AgentResult",
+  "description": "Lo que devuelve un agente (6.12.4): evidencia estructurada, avisos y parcialidad. El texto de modelo va aparte, en model_outputs, y nunca es el resultado principal. La raíz añade schema_version al contrato (6.12.9); embebido en otro contrato se usa $defs/agentResult sin versión.",
+  "type": "object",
+  "$ref": "#/$defs/agentResult",
+  "required": [
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    }
+  },
+  "unevaluatedProperties": false,
+  "$defs": {
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "no_data",
+        "denied",
+        "failed"
+      ]
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "message": {
+          "$ref": "common.schema.json#/$defs/text"
+        }
+      }
+    },
+    "needDelegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reason",
+        "suggested_domain",
+        "context_ref",
+        "rationale"
+      ],
+      "properties": {
+        "reason": {
+          "enum": [
+            "needs_procedure",
+            "needs_complementary_data",
+            "needs_legal_review",
+            "out_of_scope"
+          ]
+        },
+        "suggested_domain": {
+          "enum": [
+            "monitorizacion",
+            "economico",
+            "documental",
+            "soporte",
+            "legal",
+            "contractual"
+          ]
+        },
+        "context_ref": {
+          "type": "string",
+          "pattern": "^(?![\\s\\S]*\\bagent\\.[a-z])[\\s\\S]*\\S[\\s\\S]*$"
+        },
+        "rationale": {
+          "type": "string",
+          "pattern": "^(?![\\s\\S]*\\bagent\\.[a-z])[\\s\\S]*\\S[\\s\\S]*$"
+        }
+      },
+      "description": "Propone dominio, NUNCA agente (6.12.5)."
+    },
+    "modelOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "model",
+        "model_version",
+        "purpose",
+        "text",
+        "tokens_in",
+        "tokens_out",
+        "cost_eur",
+        "produced_at"
+      ],
+      "properties": {
+        "provider": {
+          "$ref": "common.schema.json#/$defs/providerId"
+        },
+        "model": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "model_version": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "purpose": {
+          "$ref": "common.schema.json#/$defs/purpose"
+        },
+        "text": {
+          "type": "string"
+        },
+        "tokens_in": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "tokens_out": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "cost_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        "produced_at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        }
+      },
+      "description": "Texto de un modelo. NUNCA evidencia (6.3)."
+    },
+    "toolCallTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "call_id",
+        "system_id",
+        "tool_name",
+        "ms",
+        "ok"
+      ],
+      "properties": {
+        "call_id": {
+          "$ref": "common.schema.json#/$defs/callId"
+        },
+        "system_id": {
+          "$ref": "common.schema.json#/$defs/systemId"
+        },
+        "tool_name": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "ok": {
+          "type": "boolean"
+        }
+      }
+    },
+    "externalCallTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "at"
+      ],
+      "properties": {
+        "policy_id": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        },
+        "provider": {
+          "$ref": "common.schema.json#/$defs/providerId"
+        },
+        "domain": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "redactions": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/text"
+          }
+        },
+        "tokens": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "cost_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "provider"
+          ]
+        },
+        {
+          "required": [
+            "domain"
+          ]
+        }
+      ]
+    },
+    "policyDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "turn_id",
+        "principal_id",
+        "action",
+        "decision",
+        "reason_code",
+        "policy_version",
+        "decided_at"
+      ],
+      "properties": {
+        "turn_id": {
+          "$ref": "common.schema.json#/$defs/turnId"
+        },
+        "principal_id": {
+          "$ref": "common.schema.json#/$defs/principalId"
+        },
+        "action": {
+          "enum": [
+            "discover",
+            "describe",
+            "invoke",
+            "carmen.admin",
+            "agents.manage",
+            "glossary.write",
+            "policy.write",
+            "kpis.read",
+            "topics.read",
+            "audit.read"
+          ]
+        },
+        "decision": {
+          "$ref": "common.schema.json#/$defs/effect"
+        },
+        "reason_code": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "policy_version": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "decided_at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/dottedId"
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "enum": [
+                  "discover",
+                  "describe",
+                  "invoke"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "agent_id"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "agent_id"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "deny"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scopes": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "approvalRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "status"
+      ],
+      "properties": {
+        "request_id": {
+          "$ref": "common.schema.json#/$defs/approvalId"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "rejected",
+            "expired"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "evidence.schema.json#/$defs/evidenceReference"
+          }
+        },
+        "decided_by": {
+          "$ref": "common.schema.json#/$defs/principalId"
+        },
+        "decided_at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "approved",
+                  "rejected"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "decided_by",
+              "decided_at"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "pending"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "decided_by"
+                  ]
+                },
+                {
+                  "required": [
+                    "decided_at"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "agentRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "agent_id",
+        "started_at",
+        "ended_at"
+      ],
+      "properties": {
+        "run_id": {
+          "$ref": "common.schema.json#/$defs/runId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "started_at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        },
+        "ended_at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        },
+        "tokens_in": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "tokens_out": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "cost_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/toolCallTrace"
+          }
+        },
+        "external": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/externalCallTrace"
+          }
+        },
+        "policy_checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/policyDecision"
+          }
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/approvalRecord"
+          }
+        }
+      }
+    },
+    "agentResult": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "agent_id",
+        "agent_version",
+        "status",
+        "run"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/$defs/taskId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "agent_version": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "run": {
+          "$ref": "#/$defs/agentRun"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "evidence.schema.json"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/warning"
+          }
+        },
+        "need_delegation": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/needDelegation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model_outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modelOutput"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "ok",
+                  "partial"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "evidence"
+            ],
+            "properties": {
+              "evidence": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "evidence": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "partial"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "warnings"
+            ],
+            "properties": {
+              "warnings": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

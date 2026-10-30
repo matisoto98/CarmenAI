@@ -1,6 +1,6 @@
 """Valida que cada esquema de contracts/ sea un JSON Schema correcto (etapa 1 de 8.4).
 
-Los contratos canónicos llegan en el Prompt 4; sin ficheros, la comprobación pasa.
+Recorre contracts/ y sus subcarpetas (registry/). Los ejemplos los valida la etapa de contrato.
 
 Uso: python ops/scripts/validate_schemas.py [fichero ...]
 """
@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def main(paths: list[str]) -> int:
-    files = [Path(p) for p in paths] or sorted((REPO_ROOT / "contracts").glob("*.schema.json"))
+    files = [Path(p) for p in paths] or sorted((REPO_ROOT / "contracts").rglob("*.schema.json"))
     failed = False
     for path in files:
         try:

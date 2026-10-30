@@ -122,6 +122,13 @@ class ConversationId(PatternId):
     pattern = re.compile(r"^cnv_[a-z0-9]{4,32}$")
 
 
+class MessageId(PatternId):
+    """Mensaje de una conversación. El del asistente es el registro del turno (7.3.1)."""
+
+    __slots__ = ()
+    pattern = re.compile(r"^msg_[a-z0-9]{4,32}$")
+
+
 class PrincipalId(PatternId):
     """Principal pseudonimizado (6.12.3: usr_...)."""
 

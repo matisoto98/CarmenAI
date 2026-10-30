@@ -61,6 +61,7 @@ jobs:
           version: ${{ env.UV_VERSION }}
       - run: uv sync --frozen
       - run: uv run ops/scripts/run_stage.sh application "Prompt 5"
+      - run: uv run ops/scripts/run_stage.sh support "Prompt 5"
       - name: cobertura por módulo (8.2)
         run: |
           uv run pytest api/tests --ignore=api/tests/repositories -q --cov --cov-report=json:coverage.json

@@ -54,3 +54,4 @@ Un ADR aceptado no se edita: se sustituye con otro que lo cite.
 | [ADR-041](ADR-041-tiempo-solo-de-aemet-e-ipma.md) | Tiempo solo de AEMET e IPMA | Aceptado | 5.18.4 |
 | [ADR-042](ADR-042-acceso-por-directorio-activo-editable-con-salvaguardas.md) | Acceso por directorio activo editable con salvaguardas | Aceptado | 5.18.6, 7.8.1 |
 | [ADR-043](ADR-043-concreciones-del-dominio-nucleo.md) | Concreciones del dominio núcleo | Aceptado | 6.2, 6.3, 6.6, 6.9.2 |
+| [ADR-044](ADR-044-concreciones-del-dominio-de-orquestacion.md) | Concreciones del dominio de orquestación | Aceptado | 2.3.2, 5.14, 6.12, 7.9.2, 7.11.2 |

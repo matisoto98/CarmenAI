@@ -60,7 +60,7 @@ def test_codes_are_unique() -> None:
 def test_taxonomy_covers_every_code_of_section_6_6() -> None:
     concrete = {cls.code for cls in _error_classes() if not cls.abstract}
     assert concrete >= SPEC_CODES
-    assert concrete - SPEC_CODES == {"invalid_plan"}
+    assert concrete - SPEC_CODES == {"invalid_plan", "invalid_transition"}
 
 
 def test_groups_are_abstract_and_have_concrete_children() -> None:

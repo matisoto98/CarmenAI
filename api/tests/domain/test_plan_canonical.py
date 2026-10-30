@@ -24,28 +24,28 @@ ANALYTIC = """
   "catalog_versions":{"vigia":"2026-07-20"},
   "limits":{"max_rounds":3,"max_tool_calls":6,"max_repairs":2},
   "steps":[
-    { "step_id":"s1", "agent":"vigia", "system":"vigia", "tool":"site_resolver",
+    { "step_id":"s1", "agent":"agent.vigia", "system":"vigia", "tool":"site_resolver",
       "arguments":{"texto":"Getafe"} },
-    { "step_id":"s2", "agent":"vigia", "system":"vigia", "tool":"build_dossier",
+    { "step_id":"s2", "agent":"agent.vigia", "system":"vigia", "tool":"build_dossier",
       "depends_on":[{"step_id":"s1"}],
       "arguments":{ "entity":"site",
         "id":{"$ref_step":"s1","$ref_fact":"site_id","$ref_field":"value"},
         "period":"mes_actual", "compare_to":"periodo_anterior" } },
-    { "step_id":"s3", "agent":"vigia", "system":"vigia", "tool":"correlate_events",
+    { "step_id":"s3", "agent":"agent.vigia", "system":"vigia", "tool":"correlate_events",
       "depends_on":[{"step_id":"s1"}], "optional": true,
       "arguments":{ "site_id":{"$ref_step":"s1","$ref_fact":"site_id"}, "window":"30d" } } ] }
 """
 
 MULTIAGENT = """
 { "schema_version":"1.0", "plan_id":"pln_d4e5f6a7b8c9",
-  "intent":"analytic", "agents":["vigia","plendata"], "round":2,
+  "intent":"analytic", "agents":["agent.vigia","agent.plendata"], "round":2,
   "catalog_versions":{"vigia":"2026-07-20","plendata":"2026-07-25"},
   "limits":{"max_rounds":2,"max_tool_calls":4,"max_repairs":2},
   "steps":[
-    { "step_id":"s1", "agent":"vigia", "system":"vigia", "tool":"top_n",
+    { "step_id":"s1", "agent":"agent.vigia", "system":"vigia", "tool":"top_n",
       "arguments":{"metric":"alarmas","group_by":"estacion","period":"mes_actual","limit":10,
                    "umbral":10.70, "estados":["ko","degradado"]} },
-    { "step_id":"s2", "agent":"plendata", "system":"plendata", "tool":"query_metric",
+    { "step_id":"s2", "agent":"agent.plendata", "system":"plendata", "tool":"query_metric",
       "depends_on":[{"step_id":"s1","hard":false}],
       "arguments":{"metric":"margen","group_by":"estacion","period":"mes_actual",
                    "label":{"$ref_step":"s1","$ref_fact":"top","$ref_field":"label"}} } ],
@@ -111,7 +111,7 @@ def test_canonical_form_omits_defaults() -> None:
 def test_canonical_form_keeps_non_defaults() -> None:
     canonical = to_canonical_dict(plan_from_json(MULTIAGENT))
     assert canonical["round"] == 2
-    assert canonical["agents"] == ["plendata", "vigia"]
+    assert canonical["agents"] == ["agent.plendata", "agent.vigia"]
     assert canonical["systems"] == ["plendata", "vigia"]
     assert canonical["join"] == {
         "entity": "estacion",

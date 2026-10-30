@@ -33,7 +33,7 @@ def step(
     deps: tuple[int, ...] = (),
     soft: tuple[int, ...] = (),
     system: SystemId = VIGIA,
-    agent: str = "vigia",
+    agent: str = "agent.vigia",
     tool: str = "query_metric",
     arguments: Mapping[str, ArgumentValue] | None = None,
     optional: bool = False,
@@ -101,7 +101,7 @@ def test_unknown_step_lookup_raises_key_error() -> None:
 
 
 def test_systems_are_derived_from_steps() -> None:
-    built = plan(step(1), step(2, system=PLENDATA, agent="plendata"))
+    built = plan(step(1), step(2, system=PLENDATA, agent="agent.plendata"))
     assert built.systems == frozenset({VIGIA, PLENDATA})
 
 
@@ -205,12 +205,12 @@ def test_diamond_is_not_a_cycle() -> None:
 
 def test_invalid_plan_reports_every_reason_at_once() -> None:
     codes = rejection(
-        step(1, system=SystemId("plenmind"), agent="intruso"),
+        step(1, system=SystemId("plenmind"), agent="agent.intruso"),
         step(1),
         step(2, deps=(9,)),
         step(3, deps=(1, 1)),
         step(4, arguments={"id": FactReference(StepId("s2"), "site_id")}),
-        agents=(AgentId("vigia"), AgentId("vigia")),
+        agents=(AgentId("agent.vigia"), AgentId("agent.vigia")),
         round=4,
         schema_version="2.0",
     )
@@ -251,8 +251,8 @@ def test_cross_join_between_agents() -> None:
     join = CrossJoin("estacion", "codigo_estacion", (StepId("s1"), StepId("s2")))
     built = plan(
         step(1, tool="top_n"),
-        step(2, system=PLENDATA, agent="plendata"),
-        agents=(AgentId("vigia"), AgentId("plendata")),
+        step(2, system=PLENDATA, agent="agent.plendata"),
+        agents=(AgentId("agent.vigia"), AgentId("agent.plendata")),
         join=join,
     )
     assert built.join == join

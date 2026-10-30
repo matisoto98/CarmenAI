@@ -40,6 +40,12 @@ class InvalidArgumentsError(ValidationError):
     code = "invalid_arguments"
 
 
+class InvalidTransitionError(ValidationError):
+    """Transición de ciclo de vida que no está entre las de 7.11.2."""
+
+    code = "invalid_transition"
+
+
 # --- Coherencia semántica y cobertura ---
 
 

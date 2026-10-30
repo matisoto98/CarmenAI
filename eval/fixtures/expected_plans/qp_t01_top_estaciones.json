@@ -1,0 +1,30 @@
+{
+  "catalog_versions": {
+    "vigia": "2026-07-20"
+  },
+  "intent": "trend",
+  "limits": {
+    "max_repairs": 2,
+    "max_rounds": 1,
+    "max_tool_calls": 2
+  },
+  "plan_id": "pln_70a1b2c3d4e5",
+  "schema_version": "1.0",
+  "steps": [
+    {
+      "agent": "agent.vigia",
+      "arguments": {
+        "group_by": "estacion",
+        "limit": 10,
+        "metric": "alarmas",
+        "period": "mes_actual"
+      },
+      "step_id": "s1",
+      "system": "vigia",
+      "tool": "top_n"
+    }
+  ],
+  "systems": [
+    "vigia"
+  ]
+}

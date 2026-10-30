@@ -187,10 +187,12 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
       - run: uv sync --frozen
+      - name: golden set bien formado (Prompt 6)
+        run: uv run pytest eval/tests -v
       - name: arnés golden
         run: |
           if [ -f eval/run.py ]; then
             uv run python -m eval.run --fail-on-regression
           else
-            echo "Etapa 11 sin arnés todavía: el golden set llega en el Prompt 6 y el arnés en el 32."
+            echo "Etapa 11 sin arnés todavía: llega en el Prompt 32."
           fi

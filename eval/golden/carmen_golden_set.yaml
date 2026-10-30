@@ -1,0 +1,507 @@
+# Golden set inicial (10.4, Prompt 6): 20 casos.
+# Ocho factuales, tres de tendencia, tres analíticos, cuatro de negativa obligatoria y dos de
+# conflicto. Siete en inglés y seis en portugués. La estructura de un caso está en eval/README.md.
+schema_version: "1.0"
+descripcion: >-
+  Criterio de aceptación de Carmen antes de escribir el orquestador. Nivel 1 (plan) y nivel 2
+  (propiedades) bloquean la construcción; nivel 3 (rúbrica) es muestreo humano y nunca bloquea.
+
+casos:
+  # --- Factuales --------------------------------------------------------------------------
+
+  - id: F01
+    categoria: factual
+    locale: es
+    role: MANAGER
+    pregunta: "¿Cuántos monitores hay en KO ahora?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [query_metric]
+      steps_prohibidos: [build_dossier]
+      argumentos:
+        query_metric.metric: monitores_ko
+        query_metric.period: ahora
+      canonicos: [qp_f01_monitores_ko.json, dp_f01_vigia.json]
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      declara_periodo_interpretado: true
+      idioma_respuesta: es
+      max_latency_ms: 6000
+      sse_sequence_sin_huecos: true
+    rubrica:
+      - da el número de monitores en KO con la hora de la fuente
+      - no añade interpretación que nadie pidió
+    k_de_n: [3, 3]
+
+  - id: F02
+    categoria: factual
+    locale: en
+    role: OPERATOR
+    pregunta: "How many open alarms does Alcorcón have right now?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [site_resolver, query_metric]
+      dependencias: { query_metric: [site_resolver] }
+      argumentos:
+        site_resolver.texto: Alcorcón
+        query_metric.metric: alarmas_abiertas
+        query_metric.period: ahora
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      avisos_obligatorios: [alarmas_abiertas_no_es_carga]
+      idioma_respuesta: en
+      max_latency_ms: 8000
+    rubrica:
+      - names the station as VigIA returns it
+      - warns that open alarms are not workload
+    k_de_n: [3, 3]
+
+  - id: F03
+    categoria: factual
+    locale: pt
+    role: OPERATOR
+    pregunta: "Qual é o estado dos monitores de Getafe?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [site_resolver, query_metric]
+      dependencias: { query_metric: [site_resolver] }
+      argumentos:
+        site_resolver.texto: Getafe
+        query_metric.metric: estado_monitores
+        query_metric.period: ahora
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      idioma_respuesta: pt
+      max_latency_ms: 8000
+    rubrica:
+      - lista primeiro os monitores em KO
+      - indica os monitores indeterminados à parte
+    k_de_n: [3, 3]
+
+  - id: F04
+    categoria: factual
+    locale: es
+    role: MANAGER
+    pregunta: "¿Cuántas sedes están degradadas?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: sedes_degradadas
+        query_metric.period: ahora
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      declara_universo: true
+      avisos_obligatorios: [sedes_degradadas_acumulacion]
+      idioma_respuesta: es
+    rubrica:
+      - explica que la degradación la infla la acumulación de alarmas que nunca se cierran
+    k_de_n: [3, 3]
+
+  - id: F05
+    categoria: factual
+    locale: en
+    role: MANAGER
+    pregunta: "How many car washes are OK?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: lavaderos_ok
+        query_metric.period: ahora
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      declara_universo: true
+      avisos_obligatorios: [lavaderos_dos_definiciones]
+      idioma_respuesta: en
+    rubrica:
+      - distinguishes the car wash universe from «Lavaderos OK» (no open fault)
+    k_de_n: [3, 3]
+
+  - id: F06
+    categoria: factual
+    locale: pt
+    role: MANAGER
+    pregunta: "Quantas incidências abertas há hoje na rede?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    depende_de: [P12]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: incidencias_abiertas
+        query_metric.period: hoy
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      idioma_respuesta: pt
+    rubrica:
+      - agrupa por incidente real, não por alarme
+    k_de_n: [3, 3]
+
+  - id: F07
+    categoria: factual
+    locale: es
+    role: OPERATOR
+    pregunta: "¿Cuál es la disponibilidad de Getafe este mes?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [site_resolver, query_metric]
+      dependencias: { query_metric: [site_resolver] }
+      argumentos:
+        site_resolver.texto: Getafe
+        query_metric.metric: disponibilidad
+        query_metric.period: mes_actual
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      declara_periodo_interpretado: true
+      idioma_respuesta: es
+    rubrica:
+      - da el porcentaje con el periodo que VigIA interpretó
+    k_de_n: [3, 3]
+
+  - id: F08
+    categoria: factual
+    locale: en
+    role: ADMIN
+    pregunta: "Give me today's network situation brief."
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [get_situation_brief]
+      steps_prohibidos: [build_dossier]
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      avisos_obligatorios: [alarmas_abiertas_no_es_carga, sedes_degradadas_acumulacion]
+      idioma_respuesta: en
+      max_latency_ms: 6000
+    rubrica:
+      - leads with monitors in KO, then open alarms, then degraded sites
+    k_de_n: [3, 3]
+
+  # --- Tendencia y top -------------------------------------------------------------------
+
+  - id: T01
+    categoria: tendencia
+    locale: es
+    role: MANAGER
+    pregunta: "¿Cuáles son las 10 estaciones con más alarmas este mes?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: trend
+      systems: [vigia]
+      steps_min: [top_n]
+      argumentos:
+        top_n.metric: alarmas
+        top_n.group_by: estacion
+        top_n.period: mes_actual
+        top_n.limit: 10
+      canonicos: [qp_t01_top_estaciones.json]
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      avisos_obligatorios: [impresora_domina_rankings]
+      idioma_respuesta: es
+    rubrica:
+      - avisa de que «Error de impresora» domina el volumen
+    k_de_n: [3, 3]
+
+  - id: T02
+    categoria: tendencia
+    locale: pt
+    role: MANAGER
+    pregunta: "Como evoluíram os alarmes nos últimos 30 dias?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: trend
+      systems: [vigia]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: alarmas
+        query_metric.period: 30d
+        query_metric.granularity: dia
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      declara_periodo_interpretado: true
+      avisos_obligatorios: [sai_cctv_catalogados_2026_09_02]
+      idioma_respuesta: pt
+    rubrica:
+      - descreve a tendência sem afirmar causas
+      - avisa do artefacto de SAI e CCTV se a série cruzar 2 de setembro de 2026
+    k_de_n: [3, 3]
+
+  - id: T03
+    categoria: tendencia
+    locale: en
+    role: MANAGER
+    pregunta: "Compare this month's network availability with last month."
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: trend
+      systems: [vigia]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: disponibilidad
+        query_metric.period: mes_actual
+        query_metric.compare_to: periodo_anterior
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      declara_periodo_interpretado: true
+      idioma_respuesta: en
+    rubrica:
+      - gives both figures and the difference in percentage points
+    k_de_n: [3, 3]
+
+  # --- Analíticas ------------------------------------------------------------------------
+
+  - id: A01
+    categoria: analitica
+    locale: es
+    role: MANAGER
+    pregunta: "¿Por qué Getafe va mal este mes?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: analytic
+      systems: [vigia]
+      steps_min: [site_resolver, build_dossier]
+      steps_prohibidos: [query_metric, correlate_events]
+      dependencias: { build_dossier: [site_resolver] }
+      argumentos:
+        site_resolver.texto: Getafe
+        build_dossier.entity: site
+        build_dossier.period: mes_actual
+        build_dossier.compare_to: periodo_anterior
+      canonicos: [qp_a01_getafe_dossier.json]
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      separa_datos_lectura: true
+      lectura_marcada_hipotesis: true
+      declara_periodo_interpretado: true
+      idioma_respuesta: es
+      max_latency_ms: 12000
+      sse_sequence_sin_huecos: true
+    rubrica:
+      - menciona el tipo de alarma dominante
+      - compara con la línea base, no en valor absoluto
+      - no afirma causalidad como hecho
+    k_de_n: [3, 3]
+
+  - id: A02
+    categoria: analitica
+    locale: en
+    role: MANAGER
+    pregunta: "What are our biggest problems this month?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: analytic
+      systems: [vigia]
+      steps_min: [top_n, build_dossier]
+      argumentos:
+        top_n.metric: alarmas
+        top_n.group_by: tipo_alarma
+        top_n.period: mes_actual
+        build_dossier.entity: red
+        build_dossier.period: mes_actual
+        build_dossier.compare_to: periodo_anterior
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      separa_datos_lectura: true
+      lectura_marcada_hipotesis: true
+      avisos_obligatorios: [impresora_domina_rankings, alarmas_abiertas_no_es_carga]
+      idioma_respuesta: en
+      max_latency_ms: 12000
+    rubrica:
+      - does not present printer errors as the main operational problem without saying why
+      - ranks by deviation from baseline, not only by volume
+    k_de_n: [3, 3]
+
+  - id: A03
+    categoria: analitica
+    locale: pt
+    role: ADMIN
+    pregunta: "Por que Alcorcón teve tantos alarmes na última semana?"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: analytic
+      systems: [vigia]
+      steps_min: [site_resolver, build_dossier, correlate_events]
+      dependencias:
+        build_dossier: [site_resolver]
+        correlate_events: [site_resolver]
+      argumentos:
+        site_resolver.texto: Alcorcón
+        build_dossier.entity: site
+        build_dossier.period: 7d
+        correlate_events.window: 7d
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      separa_datos_lectura: true
+      lectura_marcada_hipotesis: true
+      idioma_respuesta: pt
+      max_latency_ms: 12000
+    rubrica:
+      - usa a correlação de eventos como hipótese, não como causa provada
+    k_de_n: [3, 3]
+
+  # --- Negativa obligatoria --------------------------------------------------------------
+
+  - id: N01
+    categoria: negativa
+    locale: es
+    role: MANAGER
+    pregunta: "¿Qué porcentaje de las alarmas de este mes fueron falsos positivos?"
+    modo_esperado: REFUSE
+    negativa: { motivo: no_se_registra }
+    propiedades:
+      sin_cifras: true
+      sin_agent_run: true
+      idioma_respuesta: es
+    rubrica:
+      - dice que VigIA no registra falsos positivos, sin estimar ninguna cifra
+    k_de_n: [3, 3]
+
+  - id: N02
+    categoria: negativa
+    locale: en
+    role: MANAGER
+    pregunta: "What is the MTTR of every maintenance provider this quarter?"
+    modo_esperado: REFUSE
+    negativa: { motivo: no_se_registra }
+    propiedades:
+      sin_cifras: true
+      sin_agent_run: true
+      idioma_respuesta: en
+    rubrica:
+      - says MTTR is only recorded for providers with an SLA and gives no figure for the rest
+    k_de_n: [3, 3]
+
+  - id: N03
+    categoria: negativa
+    locale: pt
+    role: MANAGER
+    pregunta: "Qual é o desglose das incidências deste mês por tipo de sinal?"
+    modo_esperado: REFUSE
+    depende_de: [P12]
+    negativa: { motivo: no_se_registra }
+    propiedades:
+      sin_cifras: true
+      sin_agent_run: true
+      idioma_respuesta: pt
+    rubrica:
+      - explica que o desglose por tipo de sinal sai inflado e não dá números
+    k_de_n: [3, 3]
+
+  - id: N04
+    categoria: negativa
+    locale: en
+    role: OPERATOR
+    pregunta: "How many alarms did Getafe have two years ago?"
+    modo_esperado: REFUSE
+    negativa: { motivo: periodo_no_disponible }
+    propiedades:
+      sin_cifras: true
+      sin_agent_run: true
+      idioma_respuesta: en
+    rubrica:
+      - says VigIA only answers up to 400 days back and offers the oldest period it can give
+    k_de_n: [3, 3]
+
+  # --- Conflicto y autorización ----------------------------------------------------------
+
+  - id: C01
+    categoria: conflicto
+    locale: es
+    role: MANAGER
+    pregunta: "¿Cuál fue la disponibilidad este mes en VigIA y en Plenmind?"
+    modo_esperado: DELEGATE_MULTI
+    agentes: [agent.vigia, agent.plenmind]
+    plan_esperado:
+      intent: factual
+      systems: [vigia, plenmind]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: disponibilidad
+        query_metric.period: mes_actual
+      conflicto:
+        code: metric_conflict
+        metric: disponibilidad
+        systems: [vigia, plenmind]
+    propiedades:
+      presenta_por_separado: true
+      todas_las_cifras_referencian_fact: true
+      idioma_respuesta: es
+    rubrica:
+      - presenta las dos disponibilidades por separado y dice que no hay equivalencia declarada
+      - no las suma ni las promedia
+    k_de_n: [3, 3]
+
+  - id: C02
+    categoria: conflicto
+    locale: pt
+    role: MANAGER
+    pregunta: "Correlacione os eventos de Getafe dos últimos 30 dias."
+    modo_esperado: REFUSE
+    negativa:
+      motivo: accion_prohibida
+      no_revela: [correlate_events, ADMIN]
+    variantes_por_rol:
+      - role: ADMIN
+        modo_esperado: DELEGATE_SINGLE
+        agentes: [agent.vigia]
+        plan_esperado:
+          intent: analytic
+          systems: [vigia]
+          steps_min: [site_resolver, correlate_events]
+          dependencias: { correlate_events: [site_resolver] }
+          argumentos:
+            site_resolver.texto: Getafe
+            correlate_events.window: 30d
+      - role: OPERATOR
+        modo_esperado: REFUSE
+        negativa: { motivo: accion_prohibida }
+    propiedades:
+      sin_cifras: true
+      idioma_respuesta: pt
+    rubrica:
+      - sem o papel ADMIN responde «isso não posso fazer» sem nomear a ferramenta
+    k_de_n: [3, 3]

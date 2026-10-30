@@ -56,3 +56,4 @@ Un ADR aceptado no se edita: se sustituye con otro que lo cite.
 | [ADR-043](ADR-043-concreciones-del-dominio-nucleo.md) | Concreciones del dominio núcleo | Aceptado | 6.2, 6.3, 6.6, 6.9.2 |
 | [ADR-044](ADR-044-concreciones-del-dominio-de-orquestacion.md) | Concreciones del dominio de orquestación | Aceptado | 2.3.2, 5.14, 6.12, 7.9.2, 7.11.2 |
 | [ADR-045](ADR-045-concreciones-de-los-contratos-canonicos.md) | Concreciones de los contratos canónicos | Aceptado | 6.2, 6.3, 6.4, 6.5, 6.6, 6.11, 6.12, 7.5, 7.10 |
+| [ADR-046](ADR-046-concreciones-de-los-puertos-y-dobles.md) | Concreciones de los puertos y sus dobles | Aceptado | 5.5, 5.13.4, 5.15.6, 6.5, 7.3, 7.4 |

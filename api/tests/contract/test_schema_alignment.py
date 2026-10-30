@@ -26,6 +26,15 @@ from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 from referencing.jsonschema import DRAFT202012, Schema
 
+from carmen.application import events
+from carmen.application.events import DomainEvent, EventPayload, UnsupportedClaim
+from carmen.application.ports.mcp import (
+    EnvelopeFact,
+    EnvelopeMedia,
+    EnvelopePassage,
+    EnvelopeWarning,
+    McpEnvelope,
+)
 from carmen.domain import errors as domain_errors
 from carmen.domain import ids
 from carmen.domain.agents.card import (
@@ -296,6 +305,22 @@ ALIGNMENTS: Final = (
     Alignment("agent-card.schema.json", "/$defs/agentCard", AgentCard),
     Alignment("conversation-turn.schema.json", "/$defs/tokenUsage", TokenUsage),
     Alignment("conversation-turn.schema.json", "/$defs/conversationTurn", ConversationTurn),
+    # 6.4 sobre MCP: el puerto lo recibe ya tipado (ADR-046)
+    Alignment("mcp-envelope.schema.json", "", McpEnvelope),
+    Alignment("mcp-envelope.schema.json", "/$defs/fact", EnvelopeFact),
+    Alignment("mcp-envelope.schema.json", "/$defs/passage", EnvelopePassage),
+    Alignment("mcp-envelope.schema.json", "/$defs/media", EnvelopeMedia),
+    Alignment("mcp-envelope.schema.json", "/$defs/warning", EnvelopeWarning),
+    # 6.5 cargas SSE 1.1: las emite la aplicación como DomainEvent (ADR-046)
+    *(
+        Alignment("sse-events.schema.json", f"/$defs/{payload.event_type}Payload", payload)
+        for payload in get_args(EventPayload)
+    ),
+    Alignment(
+        "sse-events.schema.json",
+        "/$defs/groundingPayload/properties/unsupported/items",
+        UnsupportedClaim,
+    ),
 )
 
 
@@ -379,6 +404,20 @@ def test_every_orchestration_dataclass_has_a_contract() -> None:
         and obj.__module__ == delegation.__name__
     }
     assert declared <= aligned
+
+
+def test_every_event_payload_has_a_contract() -> None:
+    """Una carga nueva en events.py sin su carga SSE hace fallar la prueba (6.5)."""
+    aligned = {a.domain for a in ALIGNMENTS}
+    declared = {
+        obj
+        for obj in vars(events).values()
+        if isinstance(obj, type)
+        and dataclasses.is_dataclass(obj)
+        and obj.__module__ == events.__name__
+    }
+    assert declared - {DomainEvent} == aligned & declared
+    assert {p.event_type.value for p in get_args(EventPayload)} == set(SSE_EVENT_TYPES)
 
 
 def test_schema_versions_match_domain_constants() -> None:
@@ -500,11 +539,13 @@ def test_identifier_pattern_matches_domain(definition: str, domain: type[ids.Pat
 
 
 def _error_classes() -> Iterator[type[domain_errors.CarmenError]]:
+    """Las clases del dominio. Los refinamientos de los puertos heredan el código (ADR-046)."""
     pending: list[type[domain_errors.CarmenError]] = [domain_errors.CarmenError]
     while pending:
         cls = pending.pop()
         pending.extend(cls.__subclasses__())
-        yield cls
+        if cls.__module__ == domain_errors.__name__:
+            yield cls
 
 
 #: Familias abstractas: agrupan códigos, nunca se lanzan ni viajan.
@@ -525,40 +566,9 @@ def test_error_catalog_matches_domain_errors() -> None:
 # --- Contratos sin tipo de dominio todavía: tablas fijadas ----------------------------------
 
 # (obligatorios, opcionales) por objeto. Sus tipos llegan con los adaptadores (Prompts 7, 11, 15)
-# y entonces pasan a ALIGNMENTS; hasta entonces, esta tabla es el «tipo» de Python.
+# y entonces pasan a ALIGNMENTS; hasta entonces, esta tabla es el «tipo» de Python. La raíz SSE
+# sigue aquí: DomainEvent no lleva event_id ni schema_version, que pone presentación (ADR-046).
 PINNED: Final[Mapping[tuple[str, str], tuple[frozenset[str], frozenset[str]]]] = {
-    ("mcp-envelope.schema.json", ""): (
-        frozenset(
-            {
-                "schema_version",
-                "system_id",
-                "tool_name",
-                "call_id",
-                "correlation_id",
-                "generated_at",
-                "catalog_version",
-                "facts",
-                "passages",
-                "media",
-                "warnings",
-                "partial",
-            }
-        ),
-        frozenset({"period_interpreted", "rows", "next_cursor"}),
-    ),
-    ("mcp-envelope.schema.json", "/$defs/fact"): (
-        frozenset({"key", "label", "value"}),
-        frozenset({"metric", "unit", "entity", "dimensions"}),
-    ),
-    ("mcp-envelope.schema.json", "/$defs/passage"): (
-        frozenset({"passage_id", "document_id", "title", "text", "kind", "relevance"}),
-        frozenset({"section", "anchor", "doc_version", "updated_at", "url"}),
-    ),
-    ("mcp-envelope.schema.json", "/$defs/media"): (
-        frozenset({"media_id", "document_id", "mime", "caption", "uri"}),
-        frozenset({"bytes", "anchor"}),
-    ),
-    ("mcp-envelope.schema.json", "/$defs/warning"): (frozenset({"code", "message"}), frozenset()),
     ("mcp-servers.schema.json", ""): (frozenset({"schema_version", "servers"}), frozenset()),
     ("mcp-servers.schema.json", "/$defs/server"): (
         frozenset(
@@ -612,81 +622,6 @@ PINNED: Final[Mapping[tuple[str, str], tuple[frozenset[str], frozenset[str]]]] =
                 "sequence",
                 "timestamp",
                 "payload",
-            }
-        ),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/modePayload"): (frozenset({"response_mode"}), frozenset()),
-    ("sse-events.schema.json", "/$defs/stagePayload"): (
-        frozenset({"stage"}),
-        frozenset({"detail", "step_id"}),
-    ),
-    ("sse-events.schema.json", "/$defs/delegationPayload"): (
-        frozenset({"task_id", "agent_id", "depends_on"}),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/tool_callPayload"): (
-        frozenset(
-            {
-                "agent_id",
-                "task_id",
-                "step_id",
-                "call_id",
-                "system_id",
-                "tool_name",
-                "arguments_digest",
-            }
-        ),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/tool_resultPayload"): (
-        frozenset(
-            {"agent_id", "task_id", "step_id", "call_id", "ok", "facts_count", "ms", "partial"}
-        ),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/agent_resultPayload"): (
-        frozenset({"task_id", "agent_id", "status", "evidence_count", "ms"}),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/approval_requiredPayload"): (
-        frozenset({"request_id", "agent_id", "summary", "impact", "expires_at"}),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/deltaPayload"): (
-        frozenset({"section", "text"}),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/groundingPayload"): (
-        frozenset({"ok", "checked", "unsupported"}),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/warningPayload"): (
-        frozenset({"code", "message"}),
-        frozenset({"system_id", "agent_id"}),
-    ),
-    ("sse-events.schema.json", "/$defs/errorPayload"): (
-        frozenset({"code", "message", "recoverable"}),
-        frozenset(),
-    ),
-    ("sse-events.schema.json", "/$defs/donePayload"): (
-        frozenset(
-            {
-                "message_id",
-                "conversation_id",
-                "status",
-                "partial",
-                "missing_systems",
-                "grounding_ok",
-                "plan_id",
-                "round",
-                "repairs",
-                "latency_ms",
-                "model",
-                "catalog_versions",
-                "response_mode",
-                "agents_used",
-                "missing_agents",
             }
         ),
         frozenset(),
@@ -768,7 +703,10 @@ def test_pinned_contract_fields(key: tuple[str, str]) -> None:
 
 def test_every_object_in_every_schema_is_aligned_or_pinned() -> None:
     """Ningún objeto con propiedades queda sin comprobar: o tiene tipo, o tiene tabla."""
-    checked = {(a.schema, a.pointer) for a in ALIGNMENTS} | set(PINNED)
+    # Los objetos anidados dentro de un $defs (los ítems de grounding.unsupported) se alinean
+    # aparte y no cuentan aquí: solo raíces y $defs.
+    aligned = {(a.schema, a.pointer) for a in ALIGNMENTS if a.pointer.count("/") <= 2}
+    checked = aligned | set(PINNED)
     wrappers = {
         (name, "")
         for name, schema in _schemas().items()

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/common.schema.json",
+  "title": "Definiciones comunes",
+  "description": "Identificadores y tipos básicos compartidos por todos los contratos. Los patrones son los de carmen.domain.ids.",
+  "$defs": {
+    "schemaVersion": { "const": "1.0" },
+    "agentId": { "type": "string", "pattern": "^agent\\.[a-z][a-z0-9_-]{1,31}$" },
+    "systemId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}$" },
+    "stepId": { "type": "string", "pattern": "^s[0-9]{1,2}$" },
+    "taskId": { "type": "string", "pattern": "^t[0-9]{1,2}$" },
+    "planId": { "type": "string", "pattern": "^pln_[a-z0-9]{12}$" },
+    "delegationPlanId": { "type": "string", "pattern": "^dpl_[a-z0-9]{12}$" },
+    "turnId": { "type": "string", "pattern": "^trn_[a-z0-9]{4,32}$" },
+    "conversationId": { "type": "string", "pattern": "^cnv_[a-z0-9]{4,32}$" },
+    "principalId": { "type": "string", "pattern": "^usr_[a-z0-9]{4,32}$" },
+    "runId": { "type": "string", "pattern": "^run_[a-z0-9]{4,32}$" },
+    "approvalId": { "type": "string", "pattern": "^apr_[a-z0-9]{4,32}$" },
+    "callId": { "type": "string", "pattern": "^cal_[A-Za-z0-9]{1,60}$" },
+    "correlationId": { "type": "string", "pattern": "^cor_[A-Za-z0-9]{1,60}$" },
+    "localId": { "type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,64}$" },
+    "dottedId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)*$" },
+    "providerId": { "type": "string", "pattern": "^provider\\.[a-z][a-z0-9_-]{1,47}$" },
+    "mcpServerId": { "type": "string", "pattern": "^mcp\\.[a-z][a-z0-9_-]{1,47}$" },
+    "delegatedIdentityRef": { "type": "string", "pattern": "^idr_[A-Za-z0-9]{8,64}$" },
+    "instant": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "nonNegativeInteger": { "type": "integer", "minimum": 0 },
+    "money": { "type": "number", "minimum": 0 },
+    "locale": { "enum": ["es", "en", "pt"] },
+    "role": { "enum": ["ADMIN", "MANAGER", "OPERATOR", "AUDITOR"] },
+    "effect": { "enum": ["allow", "deny"] },
+    "purpose": { "enum": ["routing", "narration", "analysis"] },
+    "dataClass": { "enum": ["PUBLICO", "INTERNO", "CONFIDENCIAL"] },
+    "responseMode": {
+      "enum": ["SUPERVISOR_DIRECT", "DELEGATE_SINGLE", "DELEGATE_MULTI", "CLARIFY", "REFUSE"]
+    }
+  }
+}

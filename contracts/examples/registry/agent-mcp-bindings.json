@@ -1,0 +1,123 @@
+{
+  "schema": "registry/agent-mcp-bindings.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "bindings": [
+        {
+          "agent_id": "agent.vigia",
+          "mcp_server": "mcp.vigia-ops",
+          "scopes": [
+            "vigia.read"
+          ],
+          "actions": [
+            "read"
+          ],
+          "active": true
+        },
+        {
+          "agent_id": "agent.plendata",
+          "mcp_server": "mcp.plendata-core",
+          "scopes": [
+            "plendata.read"
+          ],
+          "actions": [
+            "read"
+          ],
+          "active": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "why": "acción write",
+      "doc": {
+        "schema_version": "1.0",
+        "bindings": [
+          {
+            "agent_id": "agent.vigia",
+            "mcp_server": "mcp.vigia-ops",
+            "scopes": [
+              "vigia.read"
+            ],
+            "actions": [
+              "write"
+            ],
+            "active": true
+          },
+          {
+            "agent_id": "agent.plendata",
+            "mcp_server": "mcp.plendata-core",
+            "scopes": [
+              "plendata.read"
+            ],
+            "actions": [
+              "read"
+            ],
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "servidor sin prefijo mcp.",
+      "doc": {
+        "schema_version": "1.0",
+        "bindings": [
+          {
+            "agent_id": "agent.vigia",
+            "mcp_server": "vigia-ops",
+            "scopes": [
+              "vigia.read"
+            ],
+            "actions": [
+              "read"
+            ],
+            "active": true
+          },
+          {
+            "agent_id": "agent.plendata",
+            "mcp_server": "mcp.plendata-core",
+            "scopes": [
+              "plendata.read"
+            ],
+            "actions": [
+              "read"
+            ],
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "sin estado active",
+      "doc": {
+        "schema_version": "1.0",
+        "bindings": [
+          {
+            "agent_id": "agent.vigia",
+            "mcp_server": "mcp.vigia-ops",
+            "scopes": [
+              "vigia.read"
+            ],
+            "actions": [
+              "read"
+            ]
+          },
+          {
+            "agent_id": "agent.plendata",
+            "mcp_server": "mcp.plendata-core",
+            "scopes": [
+              "plendata.read"
+            ],
+            "actions": [
+              "read"
+            ],
+            "active": false
+          }
+        ]
+      }
+    }
+  ]
+}

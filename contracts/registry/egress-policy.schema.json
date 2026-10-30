@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/registry/egress-policy.schema.json",
+  "title": "EgressPolicy",
+  "description": "Qué puede salir, con qué clasificación, a qué región y con qué redacción (7.10.2). default es deny, sin excepciones.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "default",
+    "policies"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "../common.schema.json#/$defs/schemaVersion"
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/policy"
+      }
+    },
+    "default": {
+      "const": "deny"
+    }
+  },
+  "$defs": {
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "agents",
+        "allowlist_domains",
+        "methods",
+        "max_bytes",
+        "max_requests_per_run",
+        "max_cost_per_run_eur",
+        "allowed_classifications",
+        "redactions",
+        "retention_days",
+        "region"
+      ],
+      "properties": {
+        "policy_id": {
+          "$ref": "../common.schema.json#/$defs/dottedId"
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/agentId"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "allowlist_domains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!\\d+\\.\\d+\\.\\d+\\.\\d+$)[a-z0-9-]+(\\.[a-z0-9-]+)+$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "GET"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "max_bytes": {
+          "$ref": "../common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_requests_per_run": {
+          "$ref": "../common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_cost_per_run_eur": {
+          "$ref": "../common.schema.json#/$defs/money"
+        },
+        "allowed_classifications": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/dataClass"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "redactions": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/text"
+          }
+        },
+        "retention_days": {
+          "$ref": "../common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "region": {
+          "$ref": "../common.schema.json#/$defs/text"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "schema": "sse-events.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0001",
+      "event_type": "mode",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 1,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "response_mode": "DELEGATE_MULTI"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0002",
+      "event_type": "stage",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 2,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "stage": "DELEGATING",
+        "detail": "Consultando a VigIA"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0003",
+      "event_type": "delegation",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 3,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "depends_on": []
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0004",
+      "event_type": "tool_call",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 4,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "agent_id": "agent.vigia",
+        "task_id": "t1",
+        "step_id": "s1",
+        "call_id": "cal_7f3a9c1e2b40",
+        "system_id": "vigia",
+        "tool_name": "top_n",
+        "arguments_digest": "9f86d081884c7d65"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0005",
+      "event_type": "tool_result",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 5,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "agent_id": "agent.vigia",
+        "task_id": "t1",
+        "step_id": "s1",
+        "call_id": "cal_7f3a9c1e2b40",
+        "ok": true,
+        "facts_count": 10,
+        "ms": 820,
+        "partial": false
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0006",
+      "event_type": "agent_result",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 6,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "status": "ok",
+        "evidence_count": 10,
+        "ms": 2100
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0007",
+      "event_type": "approval_required",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 7,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "request_id": "apr_0001",
+        "agent_id": "agent.plenlegal",
+        "summary": "Enviar el contrato al proveedor",
+        "impact": "critical",
+        "expires_at": "2026-07-27T10:14:22Z"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0008",
+      "event_type": "delta",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 8,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "section": "data",
+        "text": "Getafe acumula 29 alarmas"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0009",
+      "event_type": "grounding",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 9,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "ok": false,
+        "checked": 3,
+        "unsupported": [
+          {
+            "claim_id": "c2",
+            "raw_value": "10,7"
+          }
+        ]
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0010",
+      "event_type": "warning",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 10,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "code": "agent_unavailable",
+        "message": "Plendata no respondió",
+        "agent_id": "agent.plendata"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0011",
+      "event_type": "error",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 11,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "code": "cancelled",
+        "message": "Consulta cancelada",
+        "recoverable": false
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0012",
+      "event_type": "done",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 12,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "message_id": "msg_0001",
+        "conversation_id": "cnv_0001",
+        "status": "partial",
+        "partial": true,
+        "missing_systems": [
+          "plendata"
+        ],
+        "grounding_ok": false,
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "round": 1,
+        "repairs": 0,
+        "latency_ms": 4200,
+        "model": "qwen3",
+        "catalog_versions": {
+          "vigia": "2026-07-20"
+        },
+        "response_mode": "DELEGATE_MULTI",
+        "agents_used": [
+          "agent.vigia"
+        ],
+        "missing_agents": [
+          "agent.plendata"
+        ]
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "evt_0013",
+      "event_type": "done",
+      "correlation_id": "cor_18ab44de",
+      "sequence": 13,
+      "timestamp": "2026-07-27T09:14:22.481Z",
+      "payload": {
+        "message_id": "msg_0002",
+        "conversation_id": "cnv_0001",
+        "status": "completed",
+        "partial": false,
+        "missing_systems": [],
+        "grounding_ok": null,
+        "plan_id": null,
+        "round": 0,
+        "repairs": 0,
+        "latency_ms": 300,
+        "model": "qwen3",
+        "catalog_versions": {},
+        "response_mode": "SUPERVISOR_DIRECT",
+        "agents_used": [],
+        "missing_agents": []
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "why": "tipo de evento desconocido",
+      "doc": {
+        "schema_version": "1.1",
+        "event_id": "evt_0001",
+        "event_type": "thinking",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 1,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {}
+      }
+    },
+    {
+      "why": "versión 1.0 en un emisor 1.1",
+      "doc": {
+        "schema_version": "1.0",
+        "event_id": "evt_0001",
+        "event_type": "mode",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 1,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {
+          "response_mode": "DELEGATE_MULTI"
+        }
+      }
+    },
+    {
+      "why": "mode sin response_mode",
+      "doc": {
+        "schema_version": "1.1",
+        "event_id": "evt_0001",
+        "event_type": "mode",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 1,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {}
+      }
+    },
+    {
+      "why": "carga de otro tipo de evento",
+      "doc": {
+        "schema_version": "1.1",
+        "event_id": "evt_0001",
+        "event_type": "mode",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 1,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {
+          "task_id": "t1",
+          "agent_id": "agent.vigia",
+          "depends_on": []
+        }
+      }
+    },
+    {
+      "why": "sequence que no empieza en 1",
+      "doc": {
+        "schema_version": "1.1",
+        "event_id": "evt_0001",
+        "event_type": "mode",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 0,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {
+          "response_mode": "DELEGATE_MULTI"
+        }
+      }
+    },
+    {
+      "why": "done sin los campos 1.1",
+      "doc": {
+        "schema_version": "1.1",
+        "event_id": "evt_0012",
+        "event_type": "done",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 12,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {
+          "message_id": "msg_0001",
+          "conversation_id": "cnv_0001",
+          "status": "partial",
+          "partial": true,
+          "missing_systems": [
+            "plendata"
+          ],
+          "grounding_ok": false,
+          "plan_id": "dpl_7a3b9c1e4f20",
+          "round": 1,
+          "repairs": 0,
+          "latency_ms": 4200,
+          "model": "qwen3",
+          "catalog_versions": {
+            "vigia": "2026-07-20"
+          },
+          "response_mode": "DELEGATE_MULTI",
+          "missing_agents": [
+            "agent.plendata"
+          ]
+        }
+      }
+    },
+    {
+      "why": "delta de sección desconocida",
+      "doc": {
+        "schema_version": "1.1",
+        "event_id": "evt_0008",
+        "event_type": "delta",
+        "correlation_id": "cor_18ab44de",
+        "sequence": 8,
+        "timestamp": "2026-07-27T09:14:22.481Z",
+        "payload": {
+          "section": "otra",
+          "text": "x"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "schema": "registry/agent-provider-bindings.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "bindings": [
+        {
+          "agent_id": "agent.vigia",
+          "provider": "provider.internal-ollama",
+          "purposes": [
+            "routing",
+            "narration"
+          ],
+          "max_classification": "INTERNO",
+          "active": true
+        },
+        {
+          "agent_id": "agent.plenlegal",
+          "provider": "provider.internal-ollama",
+          "purposes": [
+            "routing",
+            "narration",
+            "analysis"
+          ],
+          "max_classification": "CONFIDENCIAL",
+          "active": false
+        },
+        {
+          "agent_id": "agent.plenlegal",
+          "provider": "provider.external-a",
+          "purposes": [
+            "analysis"
+          ],
+          "max_classification": "PUBLICO",
+          "region": "eu",
+          "active": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "why": "finalidad desconocida",
+      "doc": {
+        "schema_version": "1.0",
+        "bindings": [
+          {
+            "agent_id": "agent.vigia",
+            "provider": "provider.internal-ollama",
+            "purposes": [
+              "search"
+            ],
+            "max_classification": "INTERNO",
+            "active": true
+          },
+          {
+            "agent_id": "agent.plenlegal",
+            "provider": "provider.internal-ollama",
+            "purposes": [
+              "routing",
+              "narration",
+              "analysis"
+            ],
+            "max_classification": "CONFIDENCIAL",
+            "active": false
+          },
+          {
+            "agent_id": "agent.plenlegal",
+            "provider": "provider.external-a",
+            "purposes": [
+              "analysis"
+            ],
+            "max_classification": "PUBLICO",
+            "region": "eu",
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "sin clasificación máxima",
+      "doc": {
+        "schema_version": "1.0",
+        "bindings": [
+          {
+            "agent_id": "agent.vigia",
+            "provider": "provider.internal-ollama",
+            "purposes": [
+              "routing",
+              "narration"
+            ],
+            "active": true
+          },
+          {
+            "agent_id": "agent.plenlegal",
+            "provider": "provider.internal-ollama",
+            "purposes": [
+              "routing",
+              "narration",
+              "analysis"
+            ],
+            "max_classification": "CONFIDENCIAL",
+            "active": false
+          },
+          {
+            "agent_id": "agent.plenlegal",
+            "provider": "provider.external-a",
+            "purposes": [
+              "analysis"
+            ],
+            "max_classification": "PUBLICO",
+            "region": "eu",
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "clasificación desconocida",
+      "doc": {
+        "schema_version": "1.0",
+        "bindings": [
+          {
+            "agent_id": "agent.vigia",
+            "provider": "provider.internal-ollama",
+            "purposes": [
+              "routing",
+              "narration"
+            ],
+            "max_classification": "SECRETO",
+            "active": true
+          },
+          {
+            "agent_id": "agent.plenlegal",
+            "provider": "provider.internal-ollama",
+            "purposes": [
+              "routing",
+              "narration",
+              "analysis"
+            ],
+            "max_classification": "CONFIDENCIAL",
+            "active": false
+          },
+          {
+            "agent_id": "agent.plenlegal",
+            "provider": "provider.external-a",
+            "purposes": [
+              "analysis"
+            ],
+            "max_classification": "PUBLICO",
+            "region": "eu",
+            "active": false
+          }
+        ]
+      }
+    }
+  ]
+}

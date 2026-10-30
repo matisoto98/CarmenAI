@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/mcp-envelope.schema.json",
+  "title": "McpEnvelope",
+  "description": "Sobre canónico de respuesta de un servidor MCP (6.4, 6.9.4). facts, passages y media son obligatorios como claves, aunque vayan vacíos. Un sobre que no valida es McpContractViolation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_id",
+    "tool_name",
+    "call_id",
+    "correlation_id",
+    "generated_at",
+    "catalog_version",
+    "facts",
+    "passages",
+    "media",
+    "warnings",
+    "partial"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "system_id": { "$ref": "common.schema.json#/$defs/systemId" },
+    "tool_name": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,47}$" },
+    "call_id": { "$ref": "common.schema.json#/$defs/callId" },
+    "correlation_id": { "$ref": "common.schema.json#/$defs/correlationId" },
+    "generated_at": { "$ref": "common.schema.json#/$defs/instant" },
+    "catalog_version": { "$ref": "common.schema.json#/$defs/text" },
+    "period_interpreted": { "$ref": "evidence.schema.json#/$defs/period" },
+    "facts": { "type": "array", "items": { "$ref": "#/$defs/fact" } },
+    "rows": {
+      "type": "array",
+      "maxItems": 500,
+      "description": "Detalle tabular opcional y ACOTADO: el sobre no es un volcado de tabla.",
+      "items": {
+        "type": "object",
+        "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+      }
+    },
+    "passages": { "type": "array", "items": { "$ref": "#/$defs/passage" } },
+    "media": { "type": "array", "items": { "$ref": "#/$defs/media" } },
+    "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } },
+    "partial": { "type": "boolean" },
+    "next_cursor": { "type": ["string", "null"] }
+  },
+  "if": { "properties": { "partial": { "const": true } } },
+  "then": { "properties": { "warnings": { "minItems": 1 } } },
+  "$defs": {
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "label", "value"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "label": { "$ref": "common.schema.json#/$defs/text" },
+        "metric": { "$ref": "common.schema.json#/$defs/text" },
+        "value": { "type": ["number", "string", "boolean", "null"] },
+        "unit": { "$ref": "evidence.schema.json#/$defs/unit" },
+        "entity": { "$ref": "evidence.schema.json#/$defs/entityRef" },
+        "dimensions": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "passage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passage_id", "document_id", "title", "text", "kind", "relevance"],
+      "properties": {
+        "passage_id": { "$ref": "common.schema.json#/$defs/localId" },
+        "document_id": { "$ref": "common.schema.json#/$defs/text" },
+        "title": { "$ref": "common.schema.json#/$defs/text" },
+        "section": { "type": "string" },
+        "anchor": { "type": "string" },
+        "text": { "$ref": "common.schema.json#/$defs/text" },
+        "kind": { "$ref": "evidence.schema.json#/$defs/passageKind" },
+        "doc_version": { "type": "string" },
+        "updated_at": { "$ref": "common.schema.json#/$defs/instant" },
+        "url": { "type": "string" },
+        "relevance": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "if": { "properties": { "kind": { "const": "procedure" } } },
+      "then": { "required": ["updated_at"] }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["media_id", "document_id", "mime", "caption", "uri"],
+      "properties": {
+        "media_id": { "$ref": "common.schema.json#/$defs/localId" },
+        "document_id": { "$ref": "common.schema.json#/$defs/text" },
+        "mime": { "type": "string", "pattern": "^[a-z]+/[a-z0-9.+-]+$" },
+        "caption": { "$ref": "common.schema.json#/$defs/text" },
+        "uri": { "type": "string", "pattern": "^(?![dD][aA][tT][aA]:)\\S+$" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "anchor": { "type": "string" }
+      }
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "$ref": "common.schema.json#/$defs/text" },
+        "message": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    }
+  }
+}

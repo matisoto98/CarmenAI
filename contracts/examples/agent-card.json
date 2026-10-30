@@ -1,0 +1,349 @@
+{
+  "schema": "agent-card.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "agent_id": "agent.vigia",
+      "version": "1.4.0",
+      "display_name": "VigIA",
+      "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+      "status": "CERTIFIED",
+      "connectivity": "INTERNAL_ONLY",
+      "visibility": "DISCOVERABLE",
+      "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+      "public_capabilities": [
+        "Consultar el estado actual de una estación",
+        "Listar alarmas abiertas y su antigüedad",
+        "Calcular disponibilidad por periodo",
+        "Detectar desviaciones respecto a la línea base"
+      ],
+      "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+      "allowed_actions": [
+        "read"
+      ],
+      "scopes": [
+        "vigia.read"
+      ],
+      "entities_exposed": [
+        "estacion",
+        "monitor",
+        "alarma",
+        "incidencia",
+        "proveedor"
+      ],
+      "mcp_bindings": [
+        "mcp.vigia-ops"
+      ],
+      "provider_bindings": [],
+      "slo": {
+        "p95_ms": 6000,
+        "availability": 99.0
+      },
+      "budgets": {
+        "max_tokens_per_run": 6000,
+        "max_cost_per_run_eur": 0.0,
+        "max_wall_ms": 25000
+      },
+      "golden_set": "eval/golden/vigia/*.yaml",
+      "kill_switch": true
+    }
+  ],
+  "invalid": [
+    {
+      "why": "acción write en v1",
+      "doc": {
+        "schema_version": "1.0",
+        "agent_id": "agent.vigia",
+        "version": "1.4.0",
+        "display_name": "VigIA",
+        "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+        "status": "CERTIFIED",
+        "connectivity": "INTERNAL_ONLY",
+        "visibility": "DISCOVERABLE",
+        "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+        "public_capabilities": [
+          "Consultar el estado actual de una estación",
+          "Listar alarmas abiertas y su antigüedad",
+          "Calcular disponibilidad por periodo",
+          "Detectar desviaciones respecto a la línea base"
+        ],
+        "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+        "allowed_actions": [
+          "read",
+          "write"
+        ],
+        "scopes": [
+          "vigia.read"
+        ],
+        "entities_exposed": [
+          "estacion",
+          "monitor",
+          "alarma",
+          "incidencia",
+          "proveedor"
+        ],
+        "mcp_bindings": [
+          "mcp.vigia-ops"
+        ],
+        "provider_bindings": [],
+        "slo": {
+          "p95_ms": 6000,
+          "availability": 99.0
+        },
+        "budgets": {
+          "max_tokens_per_run": 6000,
+          "max_cost_per_run_eur": 0.0,
+          "max_wall_ms": 25000
+        },
+        "golden_set": "eval/golden/vigia/*.yaml",
+        "kill_switch": true
+      }
+    },
+    {
+      "why": "estado de ciclo de vida desconocido",
+      "doc": {
+        "schema_version": "1.0",
+        "agent_id": "agent.vigia",
+        "version": "1.4.0",
+        "display_name": "VigIA",
+        "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+        "status": "ACTIVE",
+        "connectivity": "INTERNAL_ONLY",
+        "visibility": "DISCOVERABLE",
+        "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+        "public_capabilities": [
+          "Consultar el estado actual de una estación",
+          "Listar alarmas abiertas y su antigüedad",
+          "Calcular disponibilidad por periodo",
+          "Detectar desviaciones respecto a la línea base"
+        ],
+        "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+        "allowed_actions": [
+          "read"
+        ],
+        "scopes": [
+          "vigia.read"
+        ],
+        "entities_exposed": [
+          "estacion",
+          "monitor",
+          "alarma",
+          "incidencia",
+          "proveedor"
+        ],
+        "mcp_bindings": [
+          "mcp.vigia-ops"
+        ],
+        "provider_bindings": [],
+        "slo": {
+          "p95_ms": 6000,
+          "availability": 99.0
+        },
+        "budgets": {
+          "max_tokens_per_run": 6000,
+          "max_cost_per_run_eur": 0.0,
+          "max_wall_ms": 25000
+        },
+        "golden_set": "eval/golden/vigia/*.yaml",
+        "kill_switch": true
+      }
+    },
+    {
+      "why": "versión no semántica",
+      "doc": {
+        "schema_version": "1.0",
+        "agent_id": "agent.vigia",
+        "version": "1.4",
+        "display_name": "VigIA",
+        "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+        "status": "CERTIFIED",
+        "connectivity": "INTERNAL_ONLY",
+        "visibility": "DISCOVERABLE",
+        "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+        "public_capabilities": [
+          "Consultar el estado actual de una estación",
+          "Listar alarmas abiertas y su antigüedad",
+          "Calcular disponibilidad por periodo",
+          "Detectar desviaciones respecto a la línea base"
+        ],
+        "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+        "allowed_actions": [
+          "read"
+        ],
+        "scopes": [
+          "vigia.read"
+        ],
+        "entities_exposed": [
+          "estacion",
+          "monitor",
+          "alarma",
+          "incidencia",
+          "proveedor"
+        ],
+        "mcp_bindings": [
+          "mcp.vigia-ops"
+        ],
+        "provider_bindings": [],
+        "slo": {
+          "p95_ms": 6000,
+          "availability": 99.0
+        },
+        "budgets": {
+          "max_tokens_per_run": 6000,
+          "max_cost_per_run_eur": 0.0,
+          "max_wall_ms": 25000
+        },
+        "golden_set": "eval/golden/vigia/*.yaml",
+        "kill_switch": true
+      }
+    },
+    {
+      "why": "campo con endpoint: la ficha no revela URL",
+      "doc": {
+        "schema_version": "1.0",
+        "agent_id": "agent.vigia",
+        "version": "1.4.0",
+        "display_name": "VigIA",
+        "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+        "status": "CERTIFIED",
+        "connectivity": "INTERNAL_ONLY",
+        "visibility": "DISCOVERABLE",
+        "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+        "public_capabilities": [
+          "Consultar el estado actual de una estación",
+          "Listar alarmas abiertas y su antigüedad",
+          "Calcular disponibilidad por periodo",
+          "Detectar desviaciones respecto a la línea base"
+        ],
+        "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+        "allowed_actions": [
+          "read"
+        ],
+        "scopes": [
+          "vigia.read"
+        ],
+        "entities_exposed": [
+          "estacion",
+          "monitor",
+          "alarma",
+          "incidencia",
+          "proveedor"
+        ],
+        "mcp_bindings": [
+          "mcp.vigia-ops"
+        ],
+        "provider_bindings": [],
+        "slo": {
+          "p95_ms": 6000,
+          "availability": 99.0
+        },
+        "budgets": {
+          "max_tokens_per_run": 6000,
+          "max_cost_per_run_eur": 0.0,
+          "max_wall_ms": 25000
+        },
+        "golden_set": "eval/golden/vigia/*.yaml",
+        "kill_switch": true,
+        "endpoint": "https://vigia.plenergy.local"
+      }
+    },
+    {
+      "why": "visibilidad desconocida",
+      "doc": {
+        "schema_version": "1.0",
+        "agent_id": "agent.vigia",
+        "version": "1.4.0",
+        "display_name": "VigIA",
+        "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+        "status": "CERTIFIED",
+        "connectivity": "INTERNAL_ONLY",
+        "visibility": "SECRET",
+        "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+        "public_capabilities": [
+          "Consultar el estado actual de una estación",
+          "Listar alarmas abiertas y su antigüedad",
+          "Calcular disponibilidad por periodo",
+          "Detectar desviaciones respecto a la línea base"
+        ],
+        "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+        "allowed_actions": [
+          "read"
+        ],
+        "scopes": [
+          "vigia.read"
+        ],
+        "entities_exposed": [
+          "estacion",
+          "monitor",
+          "alarma",
+          "incidencia",
+          "proveedor"
+        ],
+        "mcp_bindings": [
+          "mcp.vigia-ops"
+        ],
+        "provider_bindings": [],
+        "slo": {
+          "p95_ms": 6000,
+          "availability": 99.0
+        },
+        "budgets": {
+          "max_tokens_per_run": 6000,
+          "max_cost_per_run_eur": 0.0,
+          "max_wall_ms": 25000
+        },
+        "golden_set": "eval/golden/vigia/*.yaml",
+        "kill_switch": true
+      }
+    },
+    {
+      "why": "binding que no es un servidor MCP",
+      "doc": {
+        "schema_version": "1.0",
+        "agent_id": "agent.vigia",
+        "version": "1.4.0",
+        "display_name": "VigIA",
+        "owner": "[PENDIENTE DE VALIDACIÓN POR PLENERGY]",
+        "status": "CERTIFIED",
+        "connectivity": "INTERNAL_ONLY",
+        "visibility": "DISCOVERABLE",
+        "safe_description": "Monitorización de la red de estaciones de servicio: estado de estaciones, alarmas, monitores, disponibilidad, incidencias y salud de la infraestructura de campo.",
+        "public_capabilities": [
+          "Consultar el estado actual de una estación",
+          "Listar alarmas abiertas y su antigüedad",
+          "Calcular disponibilidad por periodo",
+          "Detectar desviaciones respecto a la línea base"
+        ],
+        "routing_description": "Estaciones, alarmas, monitores, disponibilidad, SLA, incidencias, anomalías, infraestructura de red y equipamiento de campo.",
+        "allowed_actions": [
+          "read"
+        ],
+        "scopes": [
+          "vigia.read"
+        ],
+        "entities_exposed": [
+          "estacion",
+          "monitor",
+          "alarma",
+          "incidencia",
+          "proveedor"
+        ],
+        "mcp_bindings": [
+          "vigia-ops"
+        ],
+        "provider_bindings": [],
+        "slo": {
+          "p95_ms": 6000,
+          "availability": 99.0
+        },
+        "budgets": {
+          "max_tokens_per_run": 6000,
+          "max_cost_per_run_eur": 0.0,
+          "max_wall_ms": 25000
+        },
+        "golden_set": "eval/golden/vigia/*.yaml",
+        "kill_switch": true
+      }
+    }
+  ]
+}

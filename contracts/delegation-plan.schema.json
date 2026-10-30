@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/delegation-plan.schema.json",
+  "title": "DelegationPlan",
+  "description": "Plan global del supervisor (6.12.3): agentes, tareas, paralelismo, composición y presupuesto. Nunca habla de herramientas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "turn_id",
+    "response_mode",
+    "principal_id",
+    "policy_version",
+    "tasks",
+    "composition",
+    "budgets"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "plan_id": {
+      "$ref": "common.schema.json#/$defs/delegationPlanId"
+    },
+    "turn_id": {
+      "$ref": "common.schema.json#/$defs/turnId"
+    },
+    "response_mode": {
+      "enum": [
+        "DELEGATE_SINGLE",
+        "DELEGATE_MULTI"
+      ]
+    },
+    "principal_id": {
+      "$ref": "common.schema.json#/$defs/principalId"
+    },
+    "policy_version": {
+      "$ref": "common.schema.json#/$defs/text"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "agent-task.schema.json#/$defs/agentTask",
+        "unevaluatedProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 12
+    },
+    "composition": {
+      "$ref": "#/$defs/composition"
+    },
+    "budgets": {
+      "$ref": "#/$defs/budgets"
+    },
+    "requires_human_approval": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "response_mode": {
+            "const": "DELEGATE_SINGLE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tasks": {
+            "maxItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "response_mode": {
+            "const": "DELEGATE_MULTI"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tasks": {
+            "minItems": 2
+          },
+          "composition": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "blocks",
+                  "join"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "tasks"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "single",
+            "blocks",
+            "join"
+          ]
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/taskId"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "entity": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "canonical_id": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "on_missing": {
+          "enum": [
+            "hueco_explicito"
+          ],
+          "default": "hueco_explicito"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "single"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "tasks": {
+                "maxItems": 1
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "entity"
+                  ]
+                },
+                {
+                  "required": [
+                    "canonical_id"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "blocks"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "tasks": {
+                "minItems": 2
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "entity"
+                  ]
+                },
+                {
+                  "required": [
+                    "canonical_id"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "join"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "tasks": {
+                "minItems": 2
+              }
+            },
+            "required": [
+              "entity",
+              "canonical_id"
+            ]
+          }
+        }
+      ]
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_wall_ms",
+        "max_tokens",
+        "max_cost_eur",
+        "max_agents"
+      ],
+      "properties": {
+        "max_wall_ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_tokens": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "max_cost_eur": {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        "max_agents": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

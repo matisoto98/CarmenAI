@@ -1,0 +1,130 @@
+{
+  "schema": "registry/external-sources.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "sources": [
+        {
+          "id": "src.boe",
+          "domains": [
+            "boe.es"
+          ],
+          "kind": "official_bulletin",
+          "reliability": "primary",
+          "agents": [
+            "agent.plenlegal"
+          ],
+          "active": false
+        },
+        {
+          "id": "src.aemet",
+          "domains": [
+            "opendata.aemet.es"
+          ],
+          "kind": "weather",
+          "reliability": "primary",
+          "agents": [
+            "agent.tiempo"
+          ],
+          "active": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "why": "dominio como IP literal",
+      "doc": {
+        "schema_version": "1.0",
+        "sources": [
+          {
+            "id": "src.boe",
+            "domains": [
+              "10.0.0.5"
+            ],
+            "kind": "official_bulletin",
+            "reliability": "primary",
+            "agents": [
+              "agent.plenlegal"
+            ],
+            "active": false
+          },
+          {
+            "id": "src.aemet",
+            "domains": [
+              "opendata.aemet.es"
+            ],
+            "kind": "weather",
+            "reliability": "primary",
+            "agents": [
+              "agent.tiempo"
+            ],
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "why": "fuente sin agentes",
+      "doc": {
+        "schema_version": "1.0",
+        "sources": [
+          {
+            "id": "src.boe",
+            "domains": [
+              "boe.es"
+            ],
+            "kind": "official_bulletin",
+            "reliability": "primary",
+            "agents": [],
+            "active": false
+          },
+          {
+            "id": "src.aemet",
+            "domains": [
+              "opendata.aemet.es"
+            ],
+            "kind": "weather",
+            "reliability": "primary",
+            "agents": [
+              "agent.tiempo"
+            ],
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "why": "fiabilidad desconocida",
+      "doc": {
+        "schema_version": "1.0",
+        "sources": [
+          {
+            "id": "src.boe",
+            "domains": [
+              "boe.es"
+            ],
+            "kind": "official_bulletin",
+            "reliability": "dudosa",
+            "agents": [
+              "agent.plenlegal"
+            ],
+            "active": false
+          },
+          {
+            "id": "src.aemet",
+            "domains": [
+              "opendata.aemet.es"
+            ],
+            "kind": "weather",
+            "reliability": "primary",
+            "agents": [
+              "agent.tiempo"
+            ],
+            "active": true
+          }
+        ]
+      }
+    }
+  ]
+}

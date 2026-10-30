@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/plan.schema.json",
+  "title": "QueryPlan",
+  "description": "Plan LOCAL de un agente sobre sus propias herramientas (6.2). systems es opcional y debe coincidir con los pasos (ADR-043).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "intent", "steps", "catalog_versions", "limits"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "plan_id": { "$ref": "common.schema.json#/$defs/planId" },
+    "intent": { "$ref": "#/$defs/intent" },
+    "systems": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "common.schema.json#/$defs/systemId" }
+    },
+    "agents": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "common.schema.json#/$defs/agentId" }
+    },
+    "join": { "$ref": "#/$defs/crossJoin" },
+    "steps": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/planStep" } },
+    "catalog_versions": {
+      "type": "object",
+      "propertyNames": { "$ref": "common.schema.json#/$defs/systemId" },
+      "additionalProperties": { "type": "string" }
+    },
+    "limits": { "$ref": "#/$defs/limits" },
+    "round": { "type": "integer", "minimum": 1, "default": 1 }
+  },
+  "$defs": {
+    "intent": {
+      "enum": [
+        "social",
+        "manifest",
+        "glossary",
+        "factual",
+        "trend",
+        "analytic",
+        "knowledge",
+        "documental",
+        "procedural",
+        "write_blocked"
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_rounds", "max_tool_calls", "max_repairs"],
+      "properties": {
+        "max_rounds": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "max_tool_calls": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "max_repairs": { "type": "integer", "minimum": 0, "maximum": 2 }
+      }
+    },
+    "crossJoin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity", "canonical_id", "steps"],
+      "properties": {
+        "entity": { "$ref": "common.schema.json#/$defs/text" },
+        "canonical_id": { "$ref": "common.schema.json#/$defs/text" },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "common.schema.json#/$defs/stepId" }
+        },
+        "on_missing": { "enum": ["hueco_explicito"], "default": "hueco_explicito" }
+      }
+    },
+    "planStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id", "agent", "system", "tool", "arguments"],
+      "properties": {
+        "step_id": { "$ref": "common.schema.json#/$defs/stepId" },
+        "agent": { "$ref": "common.schema.json#/$defs/agentId" },
+        "system": { "$ref": "common.schema.json#/$defs/systemId" },
+        "tool": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,47}$" },
+        "arguments": { "$ref": "#/$defs/arguments" },
+        "depends_on": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/stepDependency" }
+        },
+        "optional": { "type": "boolean", "default": false }
+      }
+    },
+    "stepDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id"],
+      "properties": {
+        "step_id": { "$ref": "common.schema.json#/$defs/stepId" },
+        "hard": { "type": "boolean", "default": true }
+      }
+    },
+    "arguments": {
+      "type": "object",
+      "description": "Valores literales o referencias. NUNCA texto libre procedente de un resultado anterior.",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "maxLength": 200 },
+          { "type": "number" },
+          { "type": "boolean" },
+          {
+            "type": "array",
+            "maxItems": 50,
+            "items": { "type": ["string", "number", "boolean"] }
+          },
+          { "$ref": "#/$defs/factReference" }
+        ]
+      }
+    },
+    "factReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$ref_step", "$ref_fact"],
+      "properties": {
+        "$ref_step": { "$ref": "common.schema.json#/$defs/stepId" },
+        "$ref_fact": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "$ref_field": { "enum": ["value", "entity_id", "label"], "default": "value" }
+      }
+    }
+  }
+}

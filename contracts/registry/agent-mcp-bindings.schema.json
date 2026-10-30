@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/registry/agent-mcp-bindings.schema.json",
+  "title": "AgentMcpBinding",
+  "description": "Qué agente puede usar qué servidor MCP y con qué scopes (7.10.1). mcp_server es mcp.<id> del registro de servidores (ADR-045).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bindings"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "../common.schema.json#/$defs/schemaVersion"
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/binding"
+      }
+    }
+  },
+  "$defs": {
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_id",
+        "mcp_server",
+        "scopes",
+        "actions",
+        "active"
+      ],
+      "properties": {
+        "agent_id": {
+          "$ref": "../common.schema.json#/$defs/agentId"
+        },
+        "mcp_server": {
+          "$ref": "../common.schema.json#/$defs/mcpServerId"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/dottedId"
+          },
+          "uniqueItems": true
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "const": "read"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "active": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

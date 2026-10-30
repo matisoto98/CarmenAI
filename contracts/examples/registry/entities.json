@@ -1,0 +1,198 @@
+{
+  "schema": "registry/entities.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "entidades": {
+        "estacion": {
+          "identificador_canonico": "codigo_estacion",
+          "formato": "^PLN-[0-9]{4}$",
+          "descripcion": "Identificador único de estación en Plenergy.",
+          "mapeo": {
+            "agent.vigia": {
+              "campo": "site_code",
+              "via": "site_resolver"
+            },
+            "agent.plendata": {
+              "campo": "cod_centro",
+              "via": "centro_resolver"
+            },
+            "agent.zoho-desk": {
+              "campo": "cf_estacion",
+              "via": null
+            }
+          }
+        },
+        "flota": {
+          "identificador_canonico": "codigo_flota",
+          "mapeo": {
+            "agent.zoho-desk": {
+              "campo": "cf_flota",
+              "via": null
+            }
+          }
+        },
+        "proveedor": {
+          "identificador_canonico": "nombre_proveedor",
+          "mapeo": {
+            "agent.vigia": {
+              "campo": "proveedor",
+              "via": null
+            },
+            "agent.zoho-desk": {
+              "campo": "cf_proveedor",
+              "via": null
+            }
+          }
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "why": "entidad sin mapeo",
+      "doc": {
+        "schema_version": "1.0",
+        "entidades": {
+          "estacion": {
+            "identificador_canonico": "codigo_estacion",
+            "formato": "^PLN-[0-9]{4}$",
+            "descripcion": "Identificador único de estación en Plenergy.",
+            "mapeo": {
+              "agent.vigia": {
+                "campo": "site_code",
+                "via": "site_resolver"
+              },
+              "agent.plendata": {
+                "campo": "cod_centro",
+                "via": "centro_resolver"
+              },
+              "agent.zoho-desk": {
+                "campo": "cf_estacion",
+                "via": null
+              }
+            }
+          },
+          "flota": {
+            "identificador_canonico": "codigo_flota",
+            "mapeo": {}
+          },
+          "proveedor": {
+            "identificador_canonico": "nombre_proveedor",
+            "mapeo": {
+              "agent.vigia": {
+                "campo": "proveedor",
+                "via": null
+              },
+              "agent.zoho-desk": {
+                "campo": "cf_proveedor",
+                "via": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "why": "mapeo con clave de sistema y no de agente",
+      "doc": {
+        "schema_version": "1.0",
+        "entidades": {
+          "estacion": {
+            "identificador_canonico": "codigo_estacion",
+            "formato": "^PLN-[0-9]{4}$",
+            "descripcion": "Identificador único de estación en Plenergy.",
+            "mapeo": {
+              "agent.vigia": {
+                "campo": "site_code",
+                "via": "site_resolver"
+              },
+              "agent.plendata": {
+                "campo": "cod_centro",
+                "via": "centro_resolver"
+              },
+              "agent.zoho-desk": {
+                "campo": "cf_estacion",
+                "via": null
+              }
+            }
+          },
+          "flota": {
+            "identificador_canonico": "codigo_flota",
+            "mapeo": {
+              "agent.zoho-desk": {
+                "campo": "cf_flota",
+                "via": null
+              },
+              "zoho": {
+                "campo": "cf_flota",
+                "via": null
+              }
+            }
+          },
+          "proveedor": {
+            "identificador_canonico": "nombre_proveedor",
+            "mapeo": {
+              "agent.vigia": {
+                "campo": "proveedor",
+                "via": null
+              },
+              "agent.zoho-desk": {
+                "campo": "cf_proveedor",
+                "via": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "why": "mapeo sin campo",
+      "doc": {
+        "schema_version": "1.0",
+        "entidades": {
+          "estacion": {
+            "identificador_canonico": "codigo_estacion",
+            "formato": "^PLN-[0-9]{4}$",
+            "descripcion": "Identificador único de estación en Plenergy.",
+            "mapeo": {
+              "agent.vigia": {
+                "campo": "site_code",
+                "via": "site_resolver"
+              },
+              "agent.plendata": {
+                "campo": "cod_centro",
+                "via": "centro_resolver"
+              },
+              "agent.zoho-desk": {
+                "campo": "cf_estacion",
+                "via": null
+              }
+            }
+          },
+          "flota": {
+            "identificador_canonico": "codigo_flota",
+            "mapeo": {
+              "agent.zoho-desk": {
+                "via": null
+              }
+            }
+          },
+          "proveedor": {
+            "identificador_canonico": "nombre_proveedor",
+            "mapeo": {
+              "agent.vigia": {
+                "campo": "proveedor",
+                "via": null
+              },
+              "agent.zoho-desk": {
+                "campo": "cf_proveedor",
+                "via": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

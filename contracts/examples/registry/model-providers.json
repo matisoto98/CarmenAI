@@ -1,0 +1,122 @@
+{
+  "schema": "registry/model-providers.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "providers": [
+        {
+          "id": "provider.internal-ollama",
+          "kind": "internal",
+          "region": "plenergy-dc",
+          "models": [
+            "qwen3"
+          ],
+          "retention_days": 0,
+          "contract_ref": null,
+          "active": true
+        },
+        {
+          "id": "provider.external-a",
+          "kind": "external",
+          "region": "eu",
+          "models": [
+            "modelo-x"
+          ],
+          "retention_days": 30,
+          "contract_ref": null,
+          "active": false
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "why": "proveedor externo activo sin contrato",
+      "doc": {
+        "schema_version": "1.0",
+        "providers": [
+          {
+            "id": "provider.internal-ollama",
+            "kind": "internal",
+            "region": "plenergy-dc",
+            "models": [
+              "qwen3"
+            ],
+            "retention_days": 0,
+            "contract_ref": null,
+            "active": true
+          },
+          {
+            "id": "provider.external-a",
+            "kind": "external",
+            "region": "eu",
+            "models": [
+              "modelo-x"
+            ],
+            "retention_days": 30,
+            "contract_ref": null,
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "why": "sin modelos",
+      "doc": {
+        "schema_version": "1.0",
+        "providers": [
+          {
+            "id": "provider.internal-ollama",
+            "kind": "internal",
+            "region": "plenergy-dc",
+            "models": [],
+            "retention_days": 0,
+            "contract_ref": null,
+            "active": true
+          },
+          {
+            "id": "provider.external-a",
+            "kind": "external",
+            "region": "eu",
+            "models": [
+              "modelo-x"
+            ],
+            "retention_days": 30,
+            "contract_ref": null,
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "why": "identificador sin prefijo provider.",
+      "doc": {
+        "schema_version": "1.0",
+        "providers": [
+          {
+            "id": "ollama",
+            "kind": "internal",
+            "region": "plenergy-dc",
+            "models": [
+              "qwen3"
+            ],
+            "retention_days": 0,
+            "contract_ref": null,
+            "active": true
+          },
+          {
+            "id": "provider.external-a",
+            "kind": "external",
+            "region": "eu",
+            "models": [
+              "modelo-x"
+            ],
+            "retention_days": 30,
+            "contract_ref": null,
+            "active": false
+          }
+        ]
+      }
+    }
+  ]
+}

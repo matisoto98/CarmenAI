@@ -1,0 +1,987 @@
+{
+  "schema": "agent-result.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "task_id": "t1",
+      "agent_id": "agent.vigia",
+      "agent_version": "1.4.0",
+      "status": "ok",
+      "run": {
+        "run_id": "run_0001",
+        "agent_id": "agent.vigia",
+        "started_at": "2026-07-27T09:14:20Z",
+        "ended_at": "2026-07-27T09:14:22Z",
+        "tokens_in": 900,
+        "tokens_out": 120,
+        "cost_eur": 0,
+        "tool_calls": [
+          {
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "tool_name": "top_n",
+            "ms": 820,
+            "ok": true
+          }
+        ],
+        "external": [],
+        "policy_checks": [
+          {
+            "turn_id": "trn_18ab44de",
+            "principal_id": "usr_a91f",
+            "action": "invoke",
+            "decision": "allow",
+            "reason_code": "grant_allow",
+            "policy_version": "pol-2026-07-21",
+            "decided_at": "2026-07-27T09:14:20Z",
+            "agent_id": "agent.vigia",
+            "scopes": [
+              "vigia.read"
+            ]
+          }
+        ],
+        "approvals": []
+      },
+      "evidence": [
+        {
+          "type": "fact",
+          "fact_id": "alarmas_total",
+          "call_id": "cal_7f3a9c1e2b40",
+          "system_id": "vigia",
+          "metric": "alarmas",
+          "label": "Alarmas del periodo",
+          "value": 29,
+          "unit": "count",
+          "entity": {
+            "type": "site",
+            "id": "1",
+            "name": "Getafe"
+          },
+          "dimensions": {},
+          "period": {
+            "expression": "mes_actual",
+            "from": "2026-07-01T00:00:00Z",
+            "to": "2026-07-27T09:14:22Z",
+            "text": "del 1 al 27 de julio de 2026"
+          },
+          "provenance": {
+            "tool_name": "build_dossier",
+            "catalog_version": "2026-07-20",
+            "generated_at": "2026-07-27T09:14:22Z"
+          }
+        }
+      ],
+      "warnings": [],
+      "need_delegation": null,
+      "model_outputs": [
+        {
+          "provider": "provider.internal-ollama",
+          "model": "qwen3",
+          "model_version": "2026-07",
+          "purpose": "narration",
+          "text": "Hay 29 alarmas.",
+          "tokens_in": 10,
+          "tokens_out": 5,
+          "cost_eur": 0,
+          "produced_at": "2026-07-27T09:14:22Z"
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "task_id": "t1",
+      "agent_id": "agent.vigia",
+      "agent_version": "1.4.0",
+      "status": "partial",
+      "run": {
+        "run_id": "run_0001",
+        "agent_id": "agent.vigia",
+        "started_at": "2026-07-27T09:14:20Z",
+        "ended_at": "2026-07-27T09:14:22Z",
+        "tokens_in": 900,
+        "tokens_out": 120,
+        "cost_eur": 0,
+        "tool_calls": [
+          {
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "tool_name": "top_n",
+            "ms": 820,
+            "ok": true
+          }
+        ],
+        "external": [],
+        "policy_checks": [
+          {
+            "turn_id": "trn_18ab44de",
+            "principal_id": "usr_a91f",
+            "action": "invoke",
+            "decision": "allow",
+            "reason_code": "grant_allow",
+            "policy_version": "pol-2026-07-21",
+            "decided_at": "2026-07-27T09:14:20Z",
+            "agent_id": "agent.vigia",
+            "scopes": [
+              "vigia.read"
+            ]
+          }
+        ],
+        "approvals": []
+      },
+      "evidence": [
+        {
+          "type": "fact",
+          "fact_id": "alarmas_total",
+          "call_id": "cal_7f3a9c1e2b40",
+          "system_id": "vigia",
+          "metric": "alarmas",
+          "label": "Alarmas del periodo",
+          "value": 29,
+          "unit": "count",
+          "entity": {
+            "type": "site",
+            "id": "1",
+            "name": "Getafe"
+          },
+          "dimensions": {},
+          "period": {
+            "expression": "mes_actual",
+            "from": "2026-07-01T00:00:00Z",
+            "to": "2026-07-27T09:14:22Z",
+            "text": "del 1 al 27 de julio de 2026"
+          },
+          "provenance": {
+            "tool_name": "build_dossier",
+            "catalog_version": "2026-07-20",
+            "generated_at": "2026-07-27T09:14:22Z"
+          }
+        }
+      ],
+      "warnings": [
+        {
+          "code": "step_failed",
+          "message": "correlate_events no respondió"
+        }
+      ],
+      "need_delegation": {
+        "reason": "needs_procedure",
+        "suggested_domain": "documental",
+        "context_ref": "ev:cal_7f3a9c1e2b40/alarma_42",
+        "rationale": "La alarma necesita el procedimiento oficial"
+      },
+      "model_outputs": [
+        {
+          "provider": "provider.internal-ollama",
+          "model": "qwen3",
+          "model_version": "2026-07",
+          "purpose": "narration",
+          "text": "Hay 29 alarmas.",
+          "tokens_in": 10,
+          "tokens_out": 5,
+          "cost_eur": 0,
+          "produced_at": "2026-07-27T09:14:22Z"
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0",
+      "task_id": "t2",
+      "agent_id": "agent.plendata",
+      "agent_version": "0.9.0",
+      "status": "denied",
+      "run": {
+        "run_id": "run_0001",
+        "agent_id": "agent.plendata",
+        "started_at": "2026-07-27T09:14:20Z",
+        "ended_at": "2026-07-27T09:14:22Z",
+        "tokens_in": 900,
+        "tokens_out": 120,
+        "cost_eur": 0,
+        "tool_calls": [],
+        "external": [],
+        "policy_checks": [],
+        "approvals": []
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "why": "texto libre como resultado principal: ok sin evidencia",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "un ModelOutput dentro de la evidencia",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "partial sin avisos",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "partial",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "denied con evidencia",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "denied",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "NeedDelegation que propone agente",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": {
+          "reason": "needs_procedure",
+          "suggested_domain": "documental",
+          "context_ref": "ev:1",
+          "rationale": "x",
+          "agent_id": "agent.plenmind"
+        },
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "NeedDelegation que nombra un agente en el texto",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": {
+          "reason": "needs_procedure",
+          "suggested_domain": "documental",
+          "context_ref": "ev:1",
+          "rationale": "pásalo a agent.plenmind"
+        },
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "decisión de política denegada que concede scopes",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "deny",
+              "reason_code": "explicit_deny",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "aprobación decidida sin decisor",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": [
+            {
+              "request_id": "apr_0001",
+              "status": "approved"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    },
+    {
+      "why": "llamada externa sin proveedor ni dominio",
+      "doc": {
+        "schema_version": "1.0",
+        "task_id": "t1",
+        "agent_id": "agent.vigia",
+        "agent_version": "1.4.0",
+        "status": "ok",
+        "run": {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [
+            {
+              "policy_id": "egress.legal-sources",
+              "at": "2026-07-27T09:14:21Z"
+            }
+          ],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        },
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "warnings": [],
+        "need_delegation": null,
+        "model_outputs": [
+          {
+            "provider": "provider.internal-ollama",
+            "model": "qwen3",
+            "model_version": "2026-07",
+            "purpose": "narration",
+            "text": "Hay 29 alarmas.",
+            "tokens_in": 10,
+            "tokens_out": 5,
+            "cost_eur": 0,
+            "produced_at": "2026-07-27T09:14:22Z"
+          }
+        ]
+      }
+    }
+  ]
+}

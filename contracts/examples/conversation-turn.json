@@ -1,0 +1,672 @@
+{
+  "schema": "conversation-turn.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "turn_id": "trn_18ab44de",
+      "conversation_id": "cnv_0001",
+      "principal_id": "usr_a91f",
+      "question": "Hola, buenos días",
+      "response_mode": "SUPERVISOR_DIRECT",
+      "policy_version": "pol-2026-07-21",
+      "status": "completed",
+      "agents_used": [],
+      "delegation_plan": null,
+      "runs": [],
+      "evidence": [],
+      "grounding": null,
+      "approvals": [],
+      "tokens": {
+        "tokens_in": 0,
+        "tokens_out": 0
+      },
+      "cost_eur": 0,
+      "latency_ms": 310,
+      "missing_agents": [],
+      "redelegations": 0
+    },
+    {
+      "schema_version": "1.0",
+      "turn_id": "trn_18ab44de",
+      "conversation_id": "cnv_0001",
+      "principal_id": "usr_a91f",
+      "question": "¿Qué estaciones con más alarmas tienen peor margen?",
+      "response_mode": "DELEGATE_MULTI",
+      "policy_version": "pol-2026-07-21",
+      "status": "partial",
+      "agents_used": [
+        "agent.vigia"
+      ],
+      "delegation_plan": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      },
+      "runs": [
+        {
+          "run_id": "run_0001",
+          "agent_id": "agent.vigia",
+          "started_at": "2026-07-27T09:14:20Z",
+          "ended_at": "2026-07-27T09:14:22Z",
+          "tokens_in": 900,
+          "tokens_out": 120,
+          "cost_eur": 0,
+          "tool_calls": [
+            {
+              "call_id": "cal_7f3a9c1e2b40",
+              "system_id": "vigia",
+              "tool_name": "top_n",
+              "ms": 820,
+              "ok": true
+            }
+          ],
+          "external": [],
+          "policy_checks": [
+            {
+              "turn_id": "trn_18ab44de",
+              "principal_id": "usr_a91f",
+              "action": "invoke",
+              "decision": "allow",
+              "reason_code": "grant_allow",
+              "policy_version": "pol-2026-07-21",
+              "decided_at": "2026-07-27T09:14:20Z",
+              "agent_id": "agent.vigia",
+              "scopes": [
+                "vigia.read"
+              ]
+            }
+          ],
+          "approvals": []
+        }
+      ],
+      "evidence": [
+        {
+          "type": "fact",
+          "fact_id": "alarmas_total",
+          "call_id": "cal_7f3a9c1e2b40",
+          "system_id": "vigia",
+          "metric": "alarmas",
+          "label": "Alarmas del periodo",
+          "value": 29,
+          "unit": "count",
+          "entity": {
+            "type": "site",
+            "id": "1",
+            "name": "Getafe"
+          },
+          "dimensions": {},
+          "period": {
+            "expression": "mes_actual",
+            "from": "2026-07-01T00:00:00Z",
+            "to": "2026-07-27T09:14:22Z",
+            "text": "del 1 al 27 de julio de 2026"
+          },
+          "provenance": {
+            "tool_name": "build_dossier",
+            "catalog_version": "2026-07-20",
+            "generated_at": "2026-07-27T09:14:22Z"
+          }
+        }
+      ],
+      "grounding": {
+        "ok": true,
+        "checked": 1,
+        "claims": [
+          {
+            "claim_id": "c1",
+            "text_span": {
+              "start": 10,
+              "end": 12
+            },
+            "raw_value": "29",
+            "normalized": 29,
+            "supported_by": {
+              "call_id": "cal_7f3a9c1e2b40",
+              "fact_id": "alarmas_total"
+            },
+            "verdict": "supported",
+            "reason": null
+          }
+        ],
+        "unsupported": []
+      },
+      "approvals": [],
+      "tokens": {
+        "tokens_in": 1800,
+        "tokens_out": 400
+      },
+      "cost_eur": 0,
+      "latency_ms": 4200,
+      "missing_agents": [
+        "agent.plendata"
+      ],
+      "redelegations": 0
+    }
+  ],
+  "invalid": [
+    {
+      "why": "saludo con agentes",
+      "doc": {
+        "schema_version": "1.0",
+        "turn_id": "trn_18ab44de",
+        "conversation_id": "cnv_0001",
+        "principal_id": "usr_a91f",
+        "question": "Hola, buenos días",
+        "response_mode": "SUPERVISOR_DIRECT",
+        "policy_version": "pol-2026-07-21",
+        "status": "completed",
+        "agents_used": [
+          "agent.vigia"
+        ],
+        "delegation_plan": null,
+        "runs": [],
+        "evidence": [],
+        "grounding": null,
+        "approvals": [],
+        "tokens": {
+          "tokens_in": 0,
+          "tokens_out": 0
+        },
+        "cost_eur": 0,
+        "latency_ms": 310,
+        "missing_agents": [],
+        "redelegations": 0
+      }
+    },
+    {
+      "why": "saludo con plan de delegación",
+      "doc": {
+        "schema_version": "1.0",
+        "turn_id": "trn_18ab44de",
+        "conversation_id": "cnv_0001",
+        "principal_id": "usr_a91f",
+        "question": "Hola, buenos días",
+        "response_mode": "SUPERVISOR_DIRECT",
+        "policy_version": "pol-2026-07-21",
+        "status": "completed",
+        "agents_used": [],
+        "delegation_plan": {
+          "schema_version": "1.0",
+          "plan_id": "dpl_7a3b9c1e4f20",
+          "turn_id": "trn_18ab44de",
+          "response_mode": "DELEGATE_MULTI",
+          "principal_id": "usr_a91f",
+          "policy_version": "pol-2026-07-21",
+          "tasks": [
+            {
+              "task_id": "t1",
+              "agent_id": "agent.vigia",
+              "objective": "alarmas por estación del mes en curso, top 10",
+              "entities": {
+                "periodo": "mes_actual"
+              },
+              "expects": "facts",
+              "locale": "es",
+              "budgets": {
+                "max_wall_ms": 10000,
+                "max_tokens": 6000,
+                "max_cost_eur": 0.0
+              },
+              "delegated_identity": "idr_7f3a9c1e2b40",
+              "depends_on": [],
+              "optional": false
+            },
+            {
+              "task_id": "t2",
+              "agent_id": "agent.plendata",
+              "objective": "margen por estación del mes en curso",
+              "entities": {
+                "periodo": "mes_actual"
+              },
+              "expects": "facts",
+              "locale": "es",
+              "budgets": {
+                "max_wall_ms": 10000,
+                "max_tokens": 6000,
+                "max_cost_eur": 0.0
+              },
+              "delegated_identity": "idr_7f3a9c1e2b40",
+              "depends_on": [],
+              "optional": true
+            }
+          ],
+          "composition": {
+            "kind": "join",
+            "entity": "estacion",
+            "canonical_id": "codigo_estacion",
+            "tasks": [
+              "t1",
+              "t2"
+            ],
+            "on_missing": "hueco_explicito"
+          },
+          "budgets": {
+            "max_wall_ms": 20000,
+            "max_tokens": 14000,
+            "max_cost_eur": 0.0,
+            "max_agents": 3
+          },
+          "requires_human_approval": false
+        },
+        "runs": [],
+        "evidence": [],
+        "grounding": null,
+        "approvals": [],
+        "tokens": {
+          "tokens_in": 0,
+          "tokens_out": 0
+        },
+        "cost_eur": 0,
+        "latency_ms": 310,
+        "missing_agents": [],
+        "redelegations": 0
+      }
+    },
+    {
+      "why": "saludo con re-delegación",
+      "doc": {
+        "schema_version": "1.0",
+        "turn_id": "trn_18ab44de",
+        "conversation_id": "cnv_0001",
+        "principal_id": "usr_a91f",
+        "question": "Hola, buenos días",
+        "response_mode": "SUPERVISOR_DIRECT",
+        "policy_version": "pol-2026-07-21",
+        "status": "completed",
+        "agents_used": [],
+        "delegation_plan": null,
+        "runs": [],
+        "evidence": [],
+        "grounding": null,
+        "approvals": [],
+        "tokens": {
+          "tokens_in": 0,
+          "tokens_out": 0
+        },
+        "cost_eur": 0,
+        "latency_ms": 310,
+        "missing_agents": [],
+        "redelegations": 1
+      }
+    },
+    {
+      "why": "turno delegado sin plan",
+      "doc": {
+        "schema_version": "1.0",
+        "turn_id": "trn_18ab44de",
+        "conversation_id": "cnv_0001",
+        "principal_id": "usr_a91f",
+        "question": "¿Qué estaciones con más alarmas tienen peor margen?",
+        "response_mode": "DELEGATE_MULTI",
+        "policy_version": "pol-2026-07-21",
+        "status": "partial",
+        "agents_used": [
+          "agent.vigia"
+        ],
+        "delegation_plan": null,
+        "runs": [
+          {
+            "run_id": "run_0001",
+            "agent_id": "agent.vigia",
+            "started_at": "2026-07-27T09:14:20Z",
+            "ended_at": "2026-07-27T09:14:22Z",
+            "tokens_in": 900,
+            "tokens_out": 120,
+            "cost_eur": 0,
+            "tool_calls": [
+              {
+                "call_id": "cal_7f3a9c1e2b40",
+                "system_id": "vigia",
+                "tool_name": "top_n",
+                "ms": 820,
+                "ok": true
+              }
+            ],
+            "external": [],
+            "policy_checks": [
+              {
+                "turn_id": "trn_18ab44de",
+                "principal_id": "usr_a91f",
+                "action": "invoke",
+                "decision": "allow",
+                "reason_code": "grant_allow",
+                "policy_version": "pol-2026-07-21",
+                "decided_at": "2026-07-27T09:14:20Z",
+                "agent_id": "agent.vigia",
+                "scopes": [
+                  "vigia.read"
+                ]
+              }
+            ],
+            "approvals": []
+          }
+        ],
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "grounding": {
+          "ok": true,
+          "checked": 1,
+          "claims": [
+            {
+              "claim_id": "c1",
+              "text_span": {
+                "start": 10,
+                "end": 12
+              },
+              "raw_value": "29",
+              "normalized": 29,
+              "supported_by": {
+                "call_id": "cal_7f3a9c1e2b40",
+                "fact_id": "alarmas_total"
+              },
+              "verdict": "supported",
+              "reason": null
+            }
+          ],
+          "unsupported": []
+        },
+        "approvals": [],
+        "tokens": {
+          "tokens_in": 1800,
+          "tokens_out": 400
+        },
+        "cost_eur": 0,
+        "latency_ms": 4200,
+        "missing_agents": [
+          "agent.plendata"
+        ],
+        "redelegations": 0
+      }
+    },
+    {
+      "why": "más de una re-delegación",
+      "doc": {
+        "schema_version": "1.0",
+        "turn_id": "trn_18ab44de",
+        "conversation_id": "cnv_0001",
+        "principal_id": "usr_a91f",
+        "question": "¿Qué estaciones con más alarmas tienen peor margen?",
+        "response_mode": "DELEGATE_MULTI",
+        "policy_version": "pol-2026-07-21",
+        "status": "partial",
+        "agents_used": [
+          "agent.vigia"
+        ],
+        "delegation_plan": {
+          "schema_version": "1.0",
+          "plan_id": "dpl_7a3b9c1e4f20",
+          "turn_id": "trn_18ab44de",
+          "response_mode": "DELEGATE_MULTI",
+          "principal_id": "usr_a91f",
+          "policy_version": "pol-2026-07-21",
+          "tasks": [
+            {
+              "task_id": "t1",
+              "agent_id": "agent.vigia",
+              "objective": "alarmas por estación del mes en curso, top 10",
+              "entities": {
+                "periodo": "mes_actual"
+              },
+              "expects": "facts",
+              "locale": "es",
+              "budgets": {
+                "max_wall_ms": 10000,
+                "max_tokens": 6000,
+                "max_cost_eur": 0.0
+              },
+              "delegated_identity": "idr_7f3a9c1e2b40",
+              "depends_on": [],
+              "optional": false
+            },
+            {
+              "task_id": "t2",
+              "agent_id": "agent.plendata",
+              "objective": "margen por estación del mes en curso",
+              "entities": {
+                "periodo": "mes_actual"
+              },
+              "expects": "facts",
+              "locale": "es",
+              "budgets": {
+                "max_wall_ms": 10000,
+                "max_tokens": 6000,
+                "max_cost_eur": 0.0
+              },
+              "delegated_identity": "idr_7f3a9c1e2b40",
+              "depends_on": [],
+              "optional": true
+            }
+          ],
+          "composition": {
+            "kind": "join",
+            "entity": "estacion",
+            "canonical_id": "codigo_estacion",
+            "tasks": [
+              "t1",
+              "t2"
+            ],
+            "on_missing": "hueco_explicito"
+          },
+          "budgets": {
+            "max_wall_ms": 20000,
+            "max_tokens": 14000,
+            "max_cost_eur": 0.0,
+            "max_agents": 3
+          },
+          "requires_human_approval": false
+        },
+        "runs": [
+          {
+            "run_id": "run_0001",
+            "agent_id": "agent.vigia",
+            "started_at": "2026-07-27T09:14:20Z",
+            "ended_at": "2026-07-27T09:14:22Z",
+            "tokens_in": 900,
+            "tokens_out": 120,
+            "cost_eur": 0,
+            "tool_calls": [
+              {
+                "call_id": "cal_7f3a9c1e2b40",
+                "system_id": "vigia",
+                "tool_name": "top_n",
+                "ms": 820,
+                "ok": true
+              }
+            ],
+            "external": [],
+            "policy_checks": [
+              {
+                "turn_id": "trn_18ab44de",
+                "principal_id": "usr_a91f",
+                "action": "invoke",
+                "decision": "allow",
+                "reason_code": "grant_allow",
+                "policy_version": "pol-2026-07-21",
+                "decided_at": "2026-07-27T09:14:20Z",
+                "agent_id": "agent.vigia",
+                "scopes": [
+                  "vigia.read"
+                ]
+              }
+            ],
+            "approvals": []
+          }
+        ],
+        "evidence": [
+          {
+            "type": "fact",
+            "fact_id": "alarmas_total",
+            "call_id": "cal_7f3a9c1e2b40",
+            "system_id": "vigia",
+            "metric": "alarmas",
+            "label": "Alarmas del periodo",
+            "value": 29,
+            "unit": "count",
+            "entity": {
+              "type": "site",
+              "id": "1",
+              "name": "Getafe"
+            },
+            "dimensions": {},
+            "period": {
+              "expression": "mes_actual",
+              "from": "2026-07-01T00:00:00Z",
+              "to": "2026-07-27T09:14:22Z",
+              "text": "del 1 al 27 de julio de 2026"
+            },
+            "provenance": {
+              "tool_name": "build_dossier",
+              "catalog_version": "2026-07-20",
+              "generated_at": "2026-07-27T09:14:22Z"
+            }
+          }
+        ],
+        "grounding": {
+          "ok": true,
+          "checked": 1,
+          "claims": [
+            {
+              "claim_id": "c1",
+              "text_span": {
+                "start": 10,
+                "end": 12
+              },
+              "raw_value": "29",
+              "normalized": 29,
+              "supported_by": {
+                "call_id": "cal_7f3a9c1e2b40",
+                "fact_id": "alarmas_total"
+              },
+              "verdict": "supported",
+              "reason": null
+            }
+          ],
+          "unsupported": []
+        },
+        "approvals": [],
+        "tokens": {
+          "tokens_in": 1800,
+          "tokens_out": 400
+        },
+        "cost_eur": 0,
+        "latency_ms": 4200,
+        "missing_agents": [
+          "agent.plendata"
+        ],
+        "redelegations": 2
+      }
+    },
+    {
+      "why": "estado de turno desconocido",
+      "doc": {
+        "schema_version": "1.0",
+        "turn_id": "trn_18ab44de",
+        "conversation_id": "cnv_0001",
+        "principal_id": "usr_a91f",
+        "question": "Hola, buenos días",
+        "response_mode": "SUPERVISOR_DIRECT",
+        "policy_version": "pol-2026-07-21",
+        "status": "awaiting_approval",
+        "agents_used": [],
+        "delegation_plan": null,
+        "runs": [],
+        "evidence": [],
+        "grounding": null,
+        "approvals": [],
+        "tokens": {
+          "tokens_in": 0,
+          "tokens_out": 0
+        },
+        "cost_eur": 0,
+        "latency_ms": 310,
+        "missing_agents": [],
+        "redelegations": 0
+      }
+    }
+  ]
+}

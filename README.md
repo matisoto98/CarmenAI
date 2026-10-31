@@ -61,7 +61,22 @@ docker compose -f ops/docker-compose.dev.yml up -d mcp-mock
 uv run pytest api/tests/contract -v
 ```
 
-Detalles de identidad simulada, modos de fallo y datos en `mcp-mock/README.md`. La API y el
+Detalles de identidad simulada, modos de fallo y datos en `mcp-mock/README.md`.
+
+El diagnóstico del MCP real de VigIA (Prompt 10) usa la misma batería en modo informe, a través
+del puente de 4.6.6. Solo desde el Mac, con la VPN y la sesión del puente ya iniciada:
+
+```bash
+nc -vz 172.27.12.15 8443                     # si falla, es la VPN
+node ~/bin/vigia-mcp-bridge.mjs --login      # solo si el puente pide iniciar sesión
+export VIGIA_MCP_CERT=~/certs/<certificado>.pem VIGIA_MCP_KEY=~/certs/<clave>.pem \
+       VIGIA_MCP_CA=~/certs/ca-root.pem
+cd api && CARMEN_PROFILE=dev CARMEN_CONTRACT_TARGET=vigia-real \
+    uv run pytest tests/contract -v --report docs/conformance/vigia.md
+```
+
+El informe se escribe en `docs/conformance/vigia.md` aunque fallen pruebas, y no lleva
+credenciales. Las concreciones están en ADR-051. La API y el
 frontend llegan en los Prompts 21 y 29.
 
 ## Validaciones

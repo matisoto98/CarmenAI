@@ -18,9 +18,13 @@ from sqlalchemy.types import UserDefinedType
 from carmen.application.errors import EmbeddingDimensionMismatchError
 from carmen.application.jsontypes import JsonValue
 from carmen.application.ports.embeddings import Vector
+from carmen.domain.agents.card import AgentLifecycleState
+from carmen.domain.approval.models import ApprovalStatus
 from carmen.domain.conversation.turn import TurnStatus
+from carmen.domain.delegation.models import AgentResultStatus
 from carmen.domain.errors import ValidationError
 from carmen.domain.locale import Locale
+from carmen.domain.orchestration.mode import ResponseMode
 from carmen.domain.role import Role
 from carmen.domain.time import Instant
 
@@ -38,6 +42,26 @@ LOCALE: Final = postgresql.ENUM(
 ROLE: Final = postgresql.ENUM(
     *(r.value for r in Role), name="role", schema="carmen", create_type=False
 )
+# 0002_orquestacion.sql
+RESPONSE_MODE: Final = postgresql.ENUM(
+    *(m.value for m in ResponseMode), name="response_mode", schema="carmen", create_type=False
+)
+AGENT_STATE: Final = postgresql.ENUM(
+    *(s.value for s in AgentLifecycleState),
+    name="agent_state",
+    schema="carmen",
+    create_type=False,
+)
+AGENT_RESULT_STATUS: Final = postgresql.ENUM(
+    *(s.value for s in AgentResultStatus),
+    name="agent_result_status",
+    schema="carmen",
+    create_type=False,
+)
+APPROVAL_STATUS: Final = postgresql.ENUM(
+    *(s.value for s in ApprovalStatus), name="approval_status", schema="carmen", create_type=False
+)
+MONEY: Final = sa.Numeric(12, 4, asdecimal=True)
 TEXT_ARRAY: Final = postgresql.ARRAY(sa.Text)
 TIMESTAMP: Final = sa.DateTime(timezone=True)
 

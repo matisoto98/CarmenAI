@@ -20,13 +20,42 @@ from carmen.adapters.persistence.migrator import (
 from carmen.adapters.persistence.schema import ALL_TABLES
 from carmen.adapters.persistence.types import EMBEDDING_DIM, metadata, vector_value
 from carmen.application.errors import EmbeddingDimensionMismatchError
+from carmen.domain.agents.card import AgentLifecycleState
+from carmen.domain.approval.models import ApprovalStatus, Impact
 from carmen.domain.conversation.turn import TurnStatus
+from carmen.domain.delegation.models import AgentResultStatus
 from carmen.domain.locale import Locale
+from carmen.domain.orchestration.mode import ResponseMode
 from carmen.domain.role import Role
 from carmen.migrations.__main__ import main as migrations_main
 from repositories.pg import Pg
 
 pytestmark = pytest.mark.repositories
+
+
+#: sha256 de 0001_carmen.sql tal como se fusionó en el Prompt 7. Una migración aplicada no se edita.
+CHECKSUM_0001 = (
+    "c3eb64dbec03bef9bdc8f4c32b0c6cfe5d5eed3d5786ccca98fdb70ed2d6098e"  # pragma: allowlist secret
+)
+
+
+def test_migration_0001_has_not_changed_since_it_was_merged(pg: Pg) -> None:
+    first = load_migrations()[0]
+    assert (first.version, first.checksum) == ("0001", CHECKSUM_0001)
+    recorded = pg.fetch("SELECT checksum FROM carmen_meta.schema_migrations WHERE version = '0001'")
+    assert recorded[0]["checksum"] == CHECKSUM_0001
+
+
+def test_approval_impacts_match_the_domain(pg: Pg) -> None:
+    rows = pg.fetch(
+        "SELECT pg_get_constraintdef(c.oid) AS def FROM pg_constraint c"
+        " JOIN pg_class t ON t.oid = c.conrelid JOIN pg_namespace n ON n.oid = t.relnamespace"
+        " WHERE n.nspname = 'carmen' AND t.relname = 'approvals' AND c.contype = 'c'"
+        " AND pg_get_constraintdef(c.oid) LIKE '%impact%'"
+    )
+    assert len(rows) == 1
+    assert all(f"'{i.value}'" in rows[0]["def"] for i in Impact)
+    assert rows[0]["def"].count("'") == 2 * len(Impact)
 
 
 def test_migrations_are_applied_once_and_check_passes(pg: Pg) -> None:
@@ -47,7 +76,7 @@ def test_an_edited_migration_fails_check_and_apply_refuses(pg: Pg) -> None:
 
 def test_an_applied_migration_missing_from_disk_is_unknown(pg: Pg) -> None:
     report = asyncio.run(check(pg.url, ()))
-    assert report.unknown == ("0001",)
+    assert report.unknown == ("0001", "0002")
     assert not report.ok
 
 
@@ -57,6 +86,10 @@ def test_an_applied_migration_missing_from_disk_is_unknown(pg: Pg) -> None:
         ("msg_status", [s.value for s in TurnStatus]),
         ("locale", [loc.value for loc in Locale]),
         ("role", [r.value for r in Role]),
+        ("response_mode", [m.value for m in ResponseMode]),
+        ("agent_state", [s.value for s in AgentLifecycleState]),
+        ("agent_result_status", [s.value for s in AgentResultStatus]),
+        ("approval_status", [s.value for s in ApprovalStatus]),
     ],
 )
 def test_sql_enums_match_domain_enums(pg: Pg, type_name: str, domain_values: list[str]) -> None:

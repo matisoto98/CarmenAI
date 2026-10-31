@@ -4,10 +4,15 @@ from typing import Final
 
 import sqlalchemy as sa
 
+from carmen.adapters.persistence.approvals.tables import approvals
 from carmen.adapters.persistence.brief.tables import situation_brief
+from carmen.adapters.persistence.conversation.agent_runs import agent_runs
+from carmen.adapters.persistence.conversation.external_calls import external_calls
 from carmen.adapters.persistence.conversation.tables import (
     conversations,
     evidence_facts,
+    evidence_media,
+    evidence_passages,
     feedback,
     grounding_claims,
     messages,
@@ -16,6 +21,7 @@ from carmen.adapters.persistence.conversation.tables import (
 from carmen.adapters.persistence.gaps.tables import gaps
 from carmen.adapters.persistence.glossary.tables import glossary_history, glossary_terms
 from carmen.adapters.persistence.knowledge.tables import knowledge_chunks
+from carmen.adapters.persistence.lifecycle.tables import agent_lifecycle, agent_lifecycle_history
 from carmen.adapters.persistence.memory.tables import query_memory
 from carmen.adapters.persistence.policy.tables import (
     policy_decisions,
@@ -45,4 +51,12 @@ ALL_TABLES: Final[tuple[sa.Table, ...]] = (
     role_assignments,
     role_agent_grants,
     policy_decisions,
+    # 0002_orquestacion.sql
+    agent_runs,
+    evidence_passages,
+    evidence_media,
+    approvals,
+    external_calls,
+    agent_lifecycle,
+    agent_lifecycle_history,
 )

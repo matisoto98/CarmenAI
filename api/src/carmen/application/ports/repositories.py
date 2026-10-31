@@ -17,6 +17,7 @@ from carmen.application.ports.embeddings import Vector
 from carmen.domain.agents.card import AgentLifecycleState
 from carmen.domain.approval.models import ApprovalRecord, ApprovalStatus, HumanApprovalRequest
 from carmen.domain.conversation.turn import ConversationTurn, TurnStatus
+from carmen.domain.delegation.models import AgentResult
 from carmen.domain.errors import ValidationError
 from carmen.domain.evidence.models import EvidenceFact
 from carmen.domain.ids import (
@@ -153,10 +154,19 @@ class ConversationRepository(Protocol):
 
 
 class TurnRepository(Protocol):
-    async def save(self, turn: ConversationTurn) -> None:
+    async def save(
+        self,
+        turn: ConversationTurn,
+        *,
+        message_id: MessageId,
+        results: Sequence[AgentResult] = (),
+    ) -> None:
         """En la misma unidad de trabajo que el mensaje del asistente, que ES el turno (7.3.1).
 
-        Un turno ya guardado no se reescribe: lanza ValidationError.
+        `message_id` es ese mensaje, ya guardado con sus llamadas. `results` son los AgentResult
+        cuyas ejecuciones lleva el turno, en el mismo orden que `turn.runs`: aportan la tarea, la
+        versión del agente y el estado de cada ejecución. Un turno ya guardado no se reescribe:
+        lanza ValidationError, igual que un resultado que no corresponde a una ejecución.
         """
         ...
 

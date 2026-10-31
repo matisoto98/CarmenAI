@@ -36,6 +36,7 @@ from carmen.application.ports.system import IdGenerator
 from carmen.domain.agents.card import AgentLifecycleState
 from carmen.domain.approval.models import ApprovalRecord, ApprovalStatus, HumanApprovalRequest
 from carmen.domain.conversation.turn import ConversationTurn
+from carmen.domain.delegation.models import AgentResult
 from carmen.domain.errors import InvalidTransitionError, ValidationError
 from carmen.domain.ids import AgentId, ApprovalId, ConversationId, MessageId, PrincipalId, TurnId
 from carmen.domain.locale import Locale
@@ -115,12 +116,23 @@ class InMemoryConversationRepository:
 class InMemoryTurnRepository:
     def __init__(self) -> None:
         self.turns: dict[TurnId, ConversationTurn] = {}
+        self.messages: dict[TurnId, MessageId] = {}
 
-    async def save(self, turn: ConversationTurn) -> None:
+    async def save(
+        self,
+        turn: ConversationTurn,
+        *,
+        message_id: MessageId,
+        results: Sequence[AgentResult] = (),
+    ) -> None:
         if turn.turn_id in self.turns:
             msg = f"el turno {turn.turn_id} ya está registrado y no se reescribe"
             raise ValidationError(msg)
+        if tuple(r.run for r in results) != turn.runs:
+            msg = "los resultados no corresponden a las ejecuciones del turno, en su orden"
+            raise ValidationError(msg)
         self.turns[turn.turn_id] = turn
+        self.messages[turn.turn_id] = message_id
 
     async def get(self, turn_id: TurnId) -> ConversationTurn | None:
         return self.turns.get(turn_id)

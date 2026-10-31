@@ -4,9 +4,12 @@ from dataclasses import dataclass
 
 from sqlalchemy import RowMapping
 
-from carmen.domain.ids import AgentId, Scope
+from carmen.adapters.persistence.types import instant
+from carmen.domain.ids import AgentId, PrincipalId, Scope, TurnId
 from carmen.domain.policy.models import (
+    AgentAction,
     Effect,
+    PlatformAction,
     PolicyDecision,
     PolicyRole,
     Principal,
@@ -75,7 +78,27 @@ def decision_values(d: PolicyDecision) -> dict[str, object]:
         "reason_code": d.reason_code,
         "policy_version": d.policy_version,
         "decided_at": d.decided_at.at,
+        "scopes": sorted(str(s) for s in d.scopes),
     }
+
+
+def decision_from_row(r: RowMapping) -> PolicyDecision:
+    action: AgentAction | PlatformAction = (
+        AgentAction(r["action"])
+        if r["action"] in AgentAction._value2member_map_
+        else PlatformAction(r["action"])
+    )
+    return PolicyDecision(
+        turn_id=TurnId(r["turn_id"]),
+        principal_id=PrincipalId(r["principal_id"]),
+        action=action,
+        decision=Effect(r["decision"]),
+        reason_code=r["reason_code"],
+        policy_version=r["policy_version"],
+        decided_at=instant(r["decided_at"]),
+        agent_id=None if r["agent_id"] is None else AgentId(r["agent_id"]),
+        scopes=frozenset(Scope(s) for s in r["scopes"]),
+    )
 
 
 def applicable_from_row(r: RowMapping) -> ApplicableGrant:

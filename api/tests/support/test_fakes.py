@@ -83,6 +83,7 @@ from carmen.domain.system import SystemId
 from support.builders import (
     CONVERSATION,
     CORRELATION,
+    MESSAGE,
     PLENDATA,
     PRINCIPAL,
     TURN,
@@ -91,6 +92,8 @@ from support.builders import (
     agent_result,
     agent_task,
     at,
+    delegated_turn,
+    delegation_plan,
     direct_turn,
     envelope,
     evidence_fact,
@@ -502,10 +505,22 @@ def test_touch_only_moves_forward() -> None:
 
 def test_a_turn_is_written_once() -> None:
     repo = InMemoryTurnRepository()
-    run(repo.save(direct_turn()))
+    run(repo.save(direct_turn(), message_id=MESSAGE))
     with pytest.raises(ValidationError):
-        run(repo.save(direct_turn()))
+        run(repo.save(direct_turn(), message_id=MESSAGE))
     assert run(repo.get(TURN)) == direct_turn()
+    assert repo.messages[TURN] == MESSAGE
+
+
+def test_a_turn_refuses_results_that_are_not_its_runs() -> None:
+    task = agent_task()
+    result = agent_result(task)
+    repo = InMemoryTurnRepository()
+    turn = delegated_turn(delegation_plan(task), [result])
+    with pytest.raises(ValidationError, match="ejecuciones"):
+        run(repo.save(turn, message_id=MESSAGE))
+    run(repo.save(turn, message_id=MESSAGE, results=[result]))
+    assert run(repo.get(TURN)) == turn
 
 
 def test_memory_upsert_increments_hits_atomically_and_filters_by_similarity() -> None:

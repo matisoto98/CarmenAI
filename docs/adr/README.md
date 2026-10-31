@@ -59,3 +59,4 @@ Un ADR aceptado no se edita: se sustituye con otro que lo cite.
 | [ADR-046](ADR-046-concreciones-de-los-puertos-y-dobles.md) | Concreciones de los puertos y sus dobles | Aceptado | 5.5, 5.13.4, 5.15.6, 6.5, 7.3, 7.4 |
 | [ADR-047](ADR-047-concreciones-del-golden-set-inicial.md) | Concreciones del golden set inicial | Aceptado | 2.3, 5.16.1.1, 5.17.7, 6.2.2, 6.9.4, 10.4 |
 | [ADR-048](ADR-048-concreciones-de-la-migracion-0001-y-la-persistencia.md) | Concreciones de la migración 0001 y la persistencia por agregado | Aceptado | 4.6.2, 7.2, 7.3, 7.4, 7.8.4, 7.9.3, 7.9.7 |
+| [ADR-049](ADR-049-concreciones-de-la-migracion-0002-y-la-persistencia-del-turno.md) | Concreciones de la migración 0002 y la persistencia del turno | Aceptado | 5.15.7, 6.12.5, 6.12.6, 6.12.8, 7.3.1, 7.4, 7.11.2 |

@@ -1,8 +1,6 @@
 """Conversación: tabla ⇄ dominio, sin filas de SQLAlchemy hacia arriba (7.2)."""
 
 from collections.abc import Sequence
-from decimal import Decimal
-from uuid import UUID
 
 from sqlalchemy import RowMapping
 
@@ -17,7 +15,6 @@ from carmen.application.ports.repositories import (
     ThreadMessage,
 )
 from carmen.domain.conversation.turn import TurnStatus
-from carmen.domain.evidence.models import EvidenceFact, FactValue, PeriodInterpreted
 from carmen.domain.ids import ConversationId, MessageId, PrincipalId
 from carmen.domain.locale import Locale
 
@@ -66,45 +63,6 @@ def tool_call_row(c: NewToolCall, seq: int) -> Values:
         "repaired": c.repaired,
         "ms": c.ms,
         "created_at": c.created_at.at,
-    }
-
-
-def _split_value(value: FactValue) -> tuple[Decimal | None, str | None]:
-    """Un número va a value_num, exacto; un texto o un booleano, a value_text."""
-    if isinstance(value, bool):
-        return None, "true" if value else "false"
-    if isinstance(value, Decimal | int):
-        return Decimal(value), None
-    return None, value
-
-
-def _period(p: PeriodInterpreted | None) -> str | None:
-    if p is None:
-        return None
-    return dumps(
-        {
-            "expression": p.expression,
-            "start": p.start.isoformat(),
-            "end": p.end.isoformat(),
-            "text": p.text,
-        }
-    )
-
-
-def evidence_row(message_id: MessageId, tool_call_id: UUID, f: EvidenceFact) -> Values:
-    value_num, value_text = _split_value(f.value)
-    return {
-        "message_id": str(message_id),
-        "tool_call_id": tool_call_id,
-        "fact_key": str(f.fact_id),
-        "label": f.label,
-        "value_num": value_num,
-        "value_text": value_text,
-        "unit": None if f.unit is None else f.unit.value,
-        "entity_type": None if f.entity is None else f.entity.type,
-        "entity_id": None if f.entity is None else f.entity.id,
-        "dimensions": dumps(dict(f.dimensions)),
-        "period": _period(f.period),
     }
 
 

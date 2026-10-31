@@ -9,7 +9,6 @@ from sqlalchemy.exc import IntegrityError
 from carmen.adapters.persistence.conversation import mappers
 from carmen.adapters.persistence.conversation.tables import (
     conversations,
-    evidence_facts,
     feedback,
     messages,
     tool_calls,
@@ -25,7 +24,6 @@ from carmen.application.ports.repositories import (
     NewToolCall,
 )
 from carmen.domain.errors import ValidationError
-from carmen.domain.evidence.models import EvidenceFact
 from carmen.domain.ids import ConversationId, MessageId
 from carmen.domain.time import Instant
 
@@ -80,29 +78,6 @@ class PgConversationRepository:
             )
         await self.touch(m.conversation_id, m.created_at)
         return m.message_id
-
-    async def append_evidence(self, message_id: MessageId, facts: Sequence[EvidenceFact]) -> None:
-        """Hechos de las llamadas del mensaje, en la misma unidad de trabajo que el mensaje.
-
-        Propio del adaptador hasta que la persistencia del turno (Prompt 8) lo lleve al puerto.
-        """
-        if not facts:
-            return
-        conn = connection()
-        rows = await conn.execute(
-            sa.select(tool_calls.c.call_id, tool_calls.c.id).where(
-                tool_calls.c.message_id == str(message_id)
-            )
-        )
-        by_call = {r.call_id: r.id for r in rows}
-        unknown = sorted({str(f.call_id) for f in facts} - by_call.keys())
-        if unknown:
-            msg = f"evidencia de llamadas que no son del mensaje {message_id}: {unknown}"
-            raise ValidationError(msg)
-        await conn.execute(
-            sa.insert(evidence_facts),
-            [mappers.evidence_row(message_id, by_call[str(f.call_id)], f) for f in facts],
-        )
 
     async def touch(self, cid: ConversationId, at: Instant) -> None:
         await connection().execute(

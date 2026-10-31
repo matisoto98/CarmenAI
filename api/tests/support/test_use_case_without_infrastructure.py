@@ -188,7 +188,7 @@ async def delegate(
         ),
         [],
     )
-    await ports.turns.save(turn)
+    await ports.turns.save(turn, message_id=answer, results=results)
     await emit(
         DonePayload(
             message_id=answer,

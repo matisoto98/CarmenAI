@@ -58,4 +58,8 @@ policy_decisions: Final = sa.Table(
     sa.Column("reason_code", sa.Text, nullable=False),
     sa.Column("policy_version", sa.Text, nullable=False),
     sa.Column("decided_at", TIMESTAMP, nullable=False),
+    # 0002: la ejecución de agente en la que se tomó, su orden y los scopes concedidos
+    sa.Column("agent_run_id", sa.Text),
+    sa.Column("run_ord", sa.Integer),
+    sa.Column("scopes", TEXT_ARRAY, nullable=False),
 )

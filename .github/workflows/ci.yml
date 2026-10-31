@@ -136,7 +136,14 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
       - run: uv sync --frozen
-      - run: uv run ops/scripts/run_stage.sh contract "Prompt 9"
+      - name: batería de contrato contra mcp-mock (lo arranca la propia batería)
+        run: uv run ops/scripts/run_stage.sh contract "Prompt 9"
+      - name: la misma batería contra la imagen de mcp-mock
+        run: |
+          docker compose -f ops/docker-compose.dev.yml up -d --build --wait mcp-mock
+          CARMEN_MCP_TARGETS="vigia=http://localhost:8765/vigia/mcp,plenmind=http://localhost:8765/plenmind/mcp" \
+            uv run pytest api/tests/contract/test_mcp_contract.py -v
+          docker compose -f ops/docker-compose.dev.yml down
 
   stage-07-api:
     name: "7 · API y SSE"

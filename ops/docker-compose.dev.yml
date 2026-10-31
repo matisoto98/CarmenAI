@@ -1,11 +1,14 @@
 # ops/docker-compose.dev.yml — SOLO lo que necesita contenedor (4.6.2).
 # Todas las imágenes tienen variante arm64 nativa: sin emulación.
 # La API y el frontend se ejecutan nativos; Ollama también (4.6.4).
-# El servidor MCP simulado (mcp-mock) se añade con el Prompt 9.
 #
 #   docker compose -f ops/docker-compose.dev.yml up -d postgres
 #   cd api && python -m carmen.migrations && python -m carmen.migrations --check
 #   cd api && pytest tests/repositories -v      # usa la base carmen_test, que crea si falta
+#
+#   docker compose -f ops/docker-compose.dev.yml up -d mcp-mock
+#   CARMEN_MCP_TARGETS="vigia=http://localhost:8765/vigia/mcp,plenmind=http://localhost:8765/plenmind/mcp" \
+#     pytest api/tests/contract -v    # sin la variable, la batería arranca su propio mcp-mock
 
 services:
   postgres:
@@ -20,6 +23,16 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U carmen"]
       interval: 5s
+
+  mcp-mock:
+    # Servidor MCP simulado conforme al contrato de 6.4: vigia (métricas) y plenmind (documental).
+    build: ../mcp-mock
+    environment:
+      MCP_MOCK_SEED: "20260727"
+      MCP_MOCK_NOW: "2026-07-27T09:14:22Z"
+      MCP_MOCK_PUBLIC_URL: http://localhost:8765
+      MCP_MOCK_FAILURES: "" # p. ej. vigia.query_metric=slow:3000 (ver mcp-mock/failure_modes.py)
+    ports: ["8765:8765"]
 
 volumes:
   carmen-pg: {}

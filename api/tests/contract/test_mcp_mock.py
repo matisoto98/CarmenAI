@@ -19,6 +19,7 @@ from typing import Final
 import pytest
 
 from contract.conftest import ADMIN_TOKEN, MockServer, run_mock
+from contract.envelope_checks import example_arguments, schema_errors
 from contract.mcp_client import (
     Json,
     McpClient,
@@ -28,9 +29,8 @@ from contract.mcp_client import (
     as_list,
     as_object,
 )
-from contract.test_mcp_contract import example_arguments, schema_errors
 
-pytestmark = pytest.mark.contract
+pytestmark = [pytest.mark.contract, pytest.mark.mock_only]
 
 ROOT: Final = Path(__file__).resolve().parents[3]
 FORBIDDEN: Final = 403
@@ -484,9 +484,11 @@ def test_the_dataset_carries_one_record_with_embedded_instructions(
 
 INDEPENDENT: Final = (
     *sorted((ROOT / "mcp-mock").glob("*.py")),
-    ROOT / "api/tests/contract/conftest.py",
-    ROOT / "api/tests/contract/mcp_client.py",
-    ROOT / "api/tests/contract/test_mcp_contract.py",
+    *(
+        path
+        for path in sorted((ROOT / "api/tests/contract").glob("*.py"))
+        if path.name != "test_schema_alignment.py"  # prueba de los contratos de Carmen, no del MCP
+    ),
 )
 
 

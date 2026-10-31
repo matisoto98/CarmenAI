@@ -64,7 +64,10 @@ jobs:
       - run: uv run ops/scripts/run_stage.sh support "Prompt 5"
       - name: cobertura por módulo (8.2)
         run: |
-          uv run pytest api/tests --ignore=api/tests/repositories -q --cov --cov-report=json:coverage.json
+          uv run pytest api/tests --ignore=api/tests/repositories -q --cov --cov-report=
+          # La persistencia se mide en la etapa 5, contra PostgreSQL real.
+          uv run coverage json -o coverage.json \
+            --omit='*/carmen/adapters/persistence/*,*/carmen/migrations/*'
           uv run python ops/scripts/check_coverage.py coverage.json
 
   stage-04-adapters:
@@ -84,10 +87,13 @@ jobs:
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     needs: [stage-02-domain, stage-03-application, stage-04-adapters]
     runs-on: ubuntu-24.04
+    env:
+      CARMEN_DATABASE_URL: postgresql://carmen:carmen@localhost:5432/carmen # pragma: allowlist secret
+      CARMEN_TEST_DATABASE_URL: postgresql://carmen:carmen@localhost:5432/carmen_test # pragma: allowlist secret
     services:
       postgres:
-        # Se fijará por digest desde ops/versions.env cuando llegue la migración 0001 (Prompt 7).
-        image: pgvector/pgvector:pg16
+        # El mismo digest que POSTGRES_IMAGE en ops/versions.env (pgvector 0.8.1, PostgreSQL 16).
+        image: pgvector/pgvector:0.8.1-pg16@sha256:33198da2828a14c30348d2ccb4750833d5ed9a44c88d840a0e523d7417120337
         env:
           POSTGRES_USER: carmen
           POSTGRES_PASSWORD: carmen # pragma: allowlist secret (solo CI efímero)
@@ -101,7 +107,23 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
       - run: uv sync --frozen
-      - run: uv run ops/scripts/run_stage.sh repositories "Prompt 7"
+      - name: migraciones y --check
+        run: |
+          cd api
+          uv run python -m carmen.migrations
+          uv run python -m carmen.migrations --check
+      - name: repositorios contra PostgreSQL real, con cobertura (8.2)
+        run: |
+          uv run ops/scripts/run_stage.sh repositories "Prompt 7" --cov --cov-report=
+          uv run coverage json -o coverage.json \
+            --include='*/carmen/adapters/persistence/*,*/carmen/migrations/*'
+          uv run python ops/scripts/check_coverage.py coverage.json
+      - name: diez veces seguidas sin intermitencias
+        run: |
+          for run in $(seq 10); do
+            echo "pasada $run"
+            uv run pytest api/tests/repositories -q -p no:cacheprovider || exit 1
+          done
 
   stage-06-contract:
     name: "6 · contrato"

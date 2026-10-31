@@ -48,6 +48,15 @@ AGENT_PACKAGES = (
 )
 AGENT_FORBIDDEN = ("application.ports.agents",)
 
+# Lo único de application/ que ve un adaptador: los puertos y el vocabulario de sus firmas
+# (quién pregunta, los errores que el puerto declara y los valores JSON). Nunca un caso de uso.
+ADAPTER_APPLICATION_VOCABULARY = (
+    "application.ports",
+    "application.context",
+    "application.errors",
+    "application.jsontypes",
+)
+
 # El dominio no conoce frameworks ni protocolos (5.3).
 DOMAIN_FORBIDDEN_THIRD_PARTY = (
     "fastapi",
@@ -216,7 +225,7 @@ def check_layer_rules(src_root: Path, root: str = ROOT_PACKAGE) -> list[Violatio
                 lambda t: (
                     _in(t, pkg("domain"))
                     or _in(t, pkg("adapters"))
-                    or _in(t, pkg("application.ports"))
+                    or any(_in(t, pkg(p)) for p in ADAPTER_APPLICATION_VOCABULARY)
                     or t == pkg("application")
                 ),
             )
@@ -271,7 +280,11 @@ BASE_LAYERS = {
     "application/planning/builder.py": "",
     "application/execution/runner.py": "",
     "application/usecases/ask.py": "",
+    "application/context.py": "",
+    "application/errors.py": "",
+    "application/jsontypes.py": "",
     "adapters/mcp/client.py": "",
+    "adapters/persistence/engine.py": "",
     "presentation/http/app.py": "",
     "bootstrap/container.py": "",
 }
@@ -306,6 +319,11 @@ NEGATIVE_CASES = {
         {"adapters/mcp/bad.py": "from carmen.application.usecases.ask import x\n"},
         "adapters-solo-domain-y-ports",
         "carmen.adapters.mcp.bad",
+    ),
+    "adapters-importa-planificacion": (
+        {"adapters/persistence/bad.py": "from carmen.application.planning import builder\n"},
+        "adapters-solo-domain-y-ports",
+        "carmen.adapters.persistence.bad",
     ),
     "adapters-importa-presentation": (
         {"adapters/mcp/bad.py": "from carmen.presentation.http import app\n"},
@@ -408,6 +426,12 @@ def test_allowed_imports_are_not_flagged(tmp_path: Path) -> None:
                 "from carmen.application.planning import builder\n"
             ),
             "adapters/mcp/client.py": "from carmen.application.ports import mcp\nimport httpx\n",
+            "adapters/persistence/engine.py": (
+                "from carmen.application.context import Requester\n"
+                "from carmen.application.errors import EmbeddingDimensionMismatchError\n"
+                "from carmen.application.jsontypes import JsonValue\n"
+                "import sqlalchemy\n"
+            ),
             "presentation/http/app.py": (
                 "from carmen.application.usecases import ask\n"
                 "from carmen.bootstrap import container\n"

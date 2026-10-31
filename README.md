@@ -39,8 +39,19 @@ cd web && npm ci && cd ..
 Si prefieres pip, `api/requirements-dev.lock` es la exportación de `uv.lock`:
 `uv venv --python 3.12 && uv pip install -r api/requirements-dev.lock`.
 
-La composición local con PostgreSQL y el servidor MCP simulado (`ops/docker-compose.dev.yml`),
-la API y el frontend llegan en los Prompts 7, 9, 21 y 29.
+PostgreSQL con pgvector corre en contenedor (`ops/docker-compose.dev.yml`, 4.6.2). Las migraciones
+son SQL explícito en `api/migrations/` y se aplican y comprueban con:
+
+```bash
+docker compose -f ops/docker-compose.dev.yml up -d postgres
+cd api && python -m carmen.migrations && python -m carmen.migrations --check
+cd api && pytest tests/repositories -v
+```
+
+Las pruebas de repositorio usan su propia base, `carmen_test`, que crean si falta y borran y
+migran al empezar: nunca tocan la de desarrollo. Sin PostgreSQL arrancado se saltan; en CI, que
+define `CARMEN_TEST_DATABASE_URL`, fallan. El servidor MCP simulado, la API y el frontend llegan
+en los Prompts 9, 21 y 29.
 
 ## Validaciones
 

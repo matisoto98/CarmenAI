@@ -1,0 +1,893 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/eval/golden-case.schema.json",
+  "title": "Fichero del golden set (10.4)",
+  "description": "Un fichero de casos. Nivel 1: plan en forma normal canónica (aserción dura). Nivel 2: propiedades verificables por programa. Nivel 3: rúbrica de muestreo humano, que nunca bloquea la construcción.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "casos"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "casos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/caso"
+      }
+    }
+  },
+  "$defs": {
+    "caso": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "categoria",
+        "locale",
+        "role",
+        "pregunta",
+        "propiedades",
+        "rubrica",
+        "k_de_n"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z]{1,2}[0-9]{2}$"
+        },
+        "categoria": {
+          "enum": [
+            "factual",
+            "tendencia",
+            "analitica",
+            "documental",
+            "negativa",
+            "conflicto",
+            "social",
+            "conocimiento_base",
+            "supervisor_direct",
+            "clarify",
+            "refuse",
+            "mixta",
+            "cruce",
+            "catalogo"
+          ]
+        },
+        "locale": {
+          "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/locale"
+        },
+        "role": {
+          "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/role"
+        },
+        "pregunta": {
+          "type": "string",
+          "minLength": 1
+        },
+        "modo_esperado": {
+          "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/responseMode"
+        },
+        "agentes": {
+          "$ref": "#/$defs/agentes"
+        },
+        "depende_de": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^P[0-9]{1,2}$"
+          }
+        },
+        "plan_esperado": {
+          "$ref": "#/$defs/planEsperado"
+        },
+        "negativa": {
+          "$ref": "#/$defs/negativa"
+        },
+        "aclaracion": {
+          "$ref": "#/$defs/aclaracion"
+        },
+        "catalogo": {
+          "$ref": "#/$defs/catalogo"
+        },
+        "variantes_por_rol": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/variante"
+          }
+        },
+        "propiedades": {
+          "$ref": "#/$defs/propiedades"
+        },
+        "rubrica": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "k_de_n": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "$comment": "k <= n se comprueba con la regla de abajo"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "enum": [
+                  "DELEGATE_SINGLE",
+                  "DELEGATE_MULTI"
+                ]
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "required": [
+              "agentes",
+              "plan_esperado"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "plan_esperado"
+                  ]
+                },
+                {
+                  "required": [
+                    "agentes"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "DELEGATE_SINGLE"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "properties": {
+              "agentes": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "DELEGATE_MULTI"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "properties": {
+              "agentes": {
+                "minItems": 2
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "REFUSE"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "required": [
+              "negativa"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "CLARIFY"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "required": [
+              "aclaracion"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "categoria": {
+                "const": "catalogo"
+              }
+            },
+            "required": [
+              "categoria"
+            ]
+          },
+          "then": {
+            "required": [
+              "catalogo"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "catalogo"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "categoria": {
+                "const": "negativa"
+              }
+            },
+            "required": [
+              "categoria"
+            ]
+          },
+          "then": {
+            "required": [
+              "negativa"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "categoria": {
+                "const": "conflicto"
+              }
+            },
+            "required": [
+              "categoria"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "variantes_por_rol"
+                ]
+              },
+              {
+                "properties": {
+                  "plan_esperado": {
+                    "required": [
+                      "conflicto"
+                    ]
+                  }
+                },
+                "required": [
+                  "plan_esperado"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "$comment": "k_de_n: k no supera a n",
+          "anyOf": [
+            {
+              "properties": {
+                "k_de_n": {
+                  "prefixItems": [
+                    {
+                      "const": 1
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "k_de_n": {
+                  "prefixItems": [
+                    {
+                      "const": 2
+                    },
+                    {
+                      "minimum": 2
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "k_de_n": {
+                  "prefixItems": [
+                    {
+                      "const": 3
+                    },
+                    {
+                      "minimum": 3
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "k_de_n": {
+                  "prefixItems": [
+                    {
+                      "const": 4
+                    },
+                    {
+                      "minimum": 4
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "k_de_n": {
+                  "prefixItems": [
+                    {
+                      "const": 5
+                    },
+                    {
+                      "minimum": 5
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$comment": "un mensaje de grupo sin mención no abre turno: no tiene modo",
+          "if": {
+            "required": [
+              "catalogo"
+            ],
+            "properties": {
+              "catalogo": {
+                "properties": {
+                  "respuesta": {
+                    "const": "ignorar"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "modo_esperado"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "modo_esperado"
+            ]
+          }
+        }
+      ]
+    },
+    "variante": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "modo_esperado"
+      ],
+      "properties": {
+        "role": {
+          "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/role"
+        },
+        "modo_esperado": {
+          "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/responseMode"
+        },
+        "agentes": {
+          "$ref": "#/$defs/agentes"
+        },
+        "plan_esperado": {
+          "$ref": "#/$defs/planEsperado"
+        },
+        "negativa": {
+          "$ref": "#/$defs/negativa"
+        },
+        "aclaracion": {
+          "$ref": "#/$defs/aclaracion"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "enum": [
+                  "DELEGATE_SINGLE",
+                  "DELEGATE_MULTI"
+                ]
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "required": [
+              "agentes",
+              "plan_esperado"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "plan_esperado"
+                  ]
+                },
+                {
+                  "required": [
+                    "agentes"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "DELEGATE_SINGLE"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "properties": {
+              "agentes": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "DELEGATE_MULTI"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "properties": {
+              "agentes": {
+                "minItems": 2
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "REFUSE"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "required": [
+              "negativa"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "modo_esperado": {
+                "const": "CLARIFY"
+              }
+            },
+            "required": [
+              "modo_esperado"
+            ]
+          },
+          "then": {
+            "required": [
+              "aclaracion"
+            ]
+          }
+        }
+      ]
+    },
+    "planEsperado": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent",
+        "systems"
+      ],
+      "properties": {
+        "intent": {
+          "$ref": "https://plenergy.internal/carmen/plan.schema.json#/$defs/intent"
+        },
+        "systems": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/systemId"
+          }
+        },
+        "steps_min": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,47}$"
+          }
+        },
+        "steps_prohibidos": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,47}$"
+          }
+        },
+        "dependencias": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,47}$"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{1,47}$"
+            }
+          }
+        },
+        "argumentos": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{0,47}$"
+          },
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "integer",
+              "boolean"
+            ]
+          }
+        },
+        "conflicto": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "metric",
+            "systems"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "metric_conflict"
+              ]
+            },
+            "metric": {
+              "type": "string",
+              "minLength": 1
+            },
+            "systems": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/systemId"
+              }
+            }
+          }
+        },
+        "canonicos": {
+          "$ref": "#/$defs/canonicos"
+        }
+      }
+    },
+    "negativa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "motivo"
+      ],
+      "properties": {
+        "motivo": {
+          "enum": [
+            "sin_agente_autorizado",
+            "accion_prohibida",
+            "agente_oculto",
+            "clasificacion_impide_proveedor",
+            "escritura_no_autorizada",
+            "evidencia_insuficiente",
+            "no_se_registra",
+            "periodo_no_disponible",
+            "canal_no_autorizado"
+          ]
+        },
+        "no_revela": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "aclaracion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "falta"
+      ],
+      "properties": {
+        "falta": {
+          "enum": [
+            "estacion",
+            "flota",
+            "periodo",
+            "moneda",
+            "tipo_margen",
+            "jurisdiccion",
+            "documento",
+            "alcance",
+            "familia_de_codigos"
+          ]
+        }
+      }
+    },
+    "catalogo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canal",
+        "en_grupo",
+        "mencion",
+        "respuesta"
+      ],
+      "properties": {
+        "canal": {
+          "enum": [
+            "web",
+            "whatsapp"
+          ]
+        },
+        "en_grupo": {
+          "type": "boolean"
+        },
+        "mencion": {
+          "type": "boolean"
+        },
+        "plantilla": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{2,63}$"
+        },
+        "parametros": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "integer",
+              "boolean"
+            ]
+          }
+        },
+        "respuesta": {
+          "enum": [
+            "plantilla",
+            "aclaracion",
+            "ambigua",
+            "opcion",
+            "ayuda",
+            "fuera_de_catalogo",
+            "consultar_en_web",
+            "ignorar"
+          ]
+        },
+        "opcion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "clasificacion": {
+          "enum": [
+            "operativa-interna",
+            "restringida"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "respuesta": {
+                "enum": [
+                  "plantilla",
+                  "aclaracion",
+                  "ambigua"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "plantilla",
+              "parametros"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "respuesta": {
+                "const": "opcion"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "opcion"
+            ]
+          }
+        }
+      ]
+    },
+    "propiedades": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "grounding_ok": {
+          "type": "boolean"
+        },
+        "todas_las_cifras_referencian_fact": {
+          "type": "boolean"
+        },
+        "separa_datos_lectura": {
+          "type": "boolean"
+        },
+        "lectura_marcada_hipotesis": {
+          "type": "boolean"
+        },
+        "declara_periodo_interpretado": {
+          "type": "boolean"
+        },
+        "declara_universo": {
+          "type": "boolean"
+        },
+        "presenta_por_separado": {
+          "type": "boolean"
+        },
+        "sin_agent_run": {
+          "type": "boolean"
+        },
+        "sin_cifras": {
+          "type": "boolean"
+        },
+        "idioma_respuesta": {
+          "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/locale"
+        },
+        "max_latency_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_caracteres": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "sse_sequence_sin_huecos": {
+          "type": "boolean"
+        },
+        "avisos_obligatorios": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "alarmas_abiertas_no_es_carga",
+              "impresora_domina_rankings",
+              "universo_de_la_cifra",
+              "lavaderos_dos_definiciones",
+              "sai_cctv_catalogados_2026_09_02",
+              "familias_de_codigos",
+              "sedes_degradadas_acumulacion"
+            ]
+          }
+        }
+      }
+    },
+    "agentes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://plenergy.internal/carmen/common.schema.json#/$defs/agentId"
+      }
+    },
+    "canonicos": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+\\.json$"
+      }
+    }
+  }
+}

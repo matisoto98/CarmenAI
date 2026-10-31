@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/registry/external-sources.schema.json",
+  "title": "ExternalSourceRegistry",
+  "description": "Fuentes externas autorizadas: dominios, tipo y fiabilidad (7.10). Todo lo no listado se deniega.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sources"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "../common.schema.json#/$defs/schemaVersion"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "domains",
+        "kind",
+        "reliability",
+        "agents",
+        "active"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "../common.schema.json#/$defs/dottedId"
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!\\d+\\.\\d+\\.\\d+\\.\\d+$)[a-z0-9-]+(\\.[a-z0-9-]+)+$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "kind": {
+          "enum": [
+            "official_bulletin",
+            "public_data",
+            "weather",
+            "reference"
+          ]
+        },
+        "reliability": {
+          "enum": [
+            "primary",
+            "secondary"
+          ]
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/agentId"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "active": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

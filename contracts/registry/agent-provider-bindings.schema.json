@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/registry/agent-provider-bindings.schema.json",
+  "title": "AgentProviderBinding",
+  "description": "Qué agente puede usar qué proveedor de modelo, para qué finalidad y hasta qué clasificación (7.10.1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bindings"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "../common.schema.json#/$defs/schemaVersion"
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/binding"
+      }
+    }
+  },
+  "$defs": {
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_id",
+        "provider",
+        "purposes",
+        "max_classification",
+        "active"
+      ],
+      "properties": {
+        "agent_id": {
+          "$ref": "../common.schema.json#/$defs/agentId"
+        },
+        "provider": {
+          "$ref": "../common.schema.json#/$defs/providerId"
+        },
+        "purposes": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/purpose"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "max_classification": {
+          "$ref": "../common.schema.json#/$defs/dataClass"
+        },
+        "region": {
+          "$ref": "../common.schema.json#/$defs/text"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

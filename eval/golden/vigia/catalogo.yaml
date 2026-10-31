@@ -1,0 +1,235 @@
+# Casos del catálogo semilla de VigIA (5.17.7): los mensajes de prueba del simulador, con sus
+# erratas reales. Se ejecutan por WhatsApp en el grupo de mantenimiento salvo que se diga otra cosa.
+schema_version: "1.0"
+descripcion: >-
+  Preguntas de catálogo: el plan es fijo y el modelo solo extrae los parámetros. Las erratas
+  «Arcorcon» y «Alconcon» resuelven a Alcorcón; la segunda, por estar más lejos, se confirma.
+
+casos:
+  - id: VC01
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen dime si tengo alarmas existentes en Alconcon"
+    modo_esperado: CLARIFY
+    aclaracion: { falta: estacion }
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      plantilla: alarmas_abiertas_estacion
+      parametros: { estacion: Alcorcón, periodo: ahora }
+      respuesta: aclaracion
+      clasificacion: operativa-interna
+    propiedades:
+      sin_agent_run: true
+      sin_cifras: true
+      idioma_respuesta: es
+      max_caracteres: 4096
+    rubrica:
+      - pregunta en una sola frase si se refiere a Alcorcón
+    k_de_n: [3, 3]
+
+  - id: VC02
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen monitores de Arcorcon"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [site_resolver, query_metric]
+      dependencias: { query_metric: [site_resolver] }
+      argumentos:
+        site_resolver.texto: Alcorcón
+        query_metric.metric: estado_monitores
+        query_metric.period: ahora
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      plantilla: estado_monitores_estacion
+      parametros: { estacion: Alcorcón }
+      respuesta: plantilla
+      clasificacion: operativa-interna
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      idioma_respuesta: es
+      max_caracteres: 4096
+    rubrica:
+      - cinco líneas como máximo, los monitores en KO primero
+    k_de_n: [3, 3]
+
+  - id: VC03
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen alarmas abiertas en Alcorcón"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [site_resolver, query_metric]
+      dependencias: { query_metric: [site_resolver] }
+      argumentos:
+        site_resolver.texto: Alcorcón
+        query_metric.metric: alarmas_abiertas
+        query_metric.period: ahora
+        query_metric.estado: abierta
+      canonicos: [qp_vc03_alarmas_alcorcon.json]
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      plantilla: alarmas_abiertas_estacion
+      parametros: { estacion: Alcorcón, periodo: ahora }
+      respuesta: plantilla
+      clasificacion: operativa-interna
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      avisos_obligatorios: [alarmas_abiertas_no_es_carga]
+      idioma_respuesta: es
+      max_caracteres: 4096
+    rubrica:
+      - empieza por el nombre de la estación tal como lo devuelve VigIA
+      - una línea por alarma; si hay más de 5, las 5 más recientes y el total
+      - sin saludos, despedidas ni formato
+    k_de_n: [3, 3]
+
+  - id: VC04
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen alarmas abiertas en Madrid"
+    modo_esperado: CLARIFY
+    aclaracion: { falta: estacion }
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      plantilla: alarmas_abiertas_estacion
+      parametros: { estacion: Madrid }
+      respuesta: ambigua
+      clasificacion: operativa-interna
+    propiedades:
+      sin_agent_run: true
+      sin_cifras: true
+      idioma_respuesta: es
+    rubrica:
+      - ofrece las estaciones candidatas numeradas para responder con «@carmen N»
+    k_de_n: [3, 3]
+
+  - id: VC05
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen 2"
+    modo_esperado: DELEGATE_SINGLE
+    agentes: [agent.vigia]
+    plan_esperado:
+      intent: factual
+      systems: [vigia]
+      steps_min: [query_metric]
+      argumentos:
+        query_metric.metric: alarmas_abiertas
+        query_metric.period: ahora
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      respuesta: opcion
+      opcion: 2
+      clasificacion: operativa-interna
+    propiedades:
+      grounding_ok: true
+      todas_las_cifras_referencian_fact: true
+      idioma_respuesta: es
+    rubrica:
+      - responde por la segunda estación de la lista que ofreció en VC04
+    k_de_n: [3, 3]
+
+  - id: VC06
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen ayuda"
+    modo_esperado: SUPERVISOR_DIRECT
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      respuesta: ayuda
+    propiedades:
+      sin_agent_run: true
+      sin_cifras: true
+      idioma_respuesta: es
+      max_caracteres: 4096
+    rubrica:
+      - lista las preguntas activas del catálogo con un ejemplo de cada una
+    k_de_n: [3, 3]
+
+  - id: VC07
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen ¿cuánto vendió Alcorcón ayer?"
+    modo_esperado: REFUSE
+    negativa:
+      motivo: sin_agente_autorizado
+      no_revela: [agent.plendata, Plendata]
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      respuesta: fuera_de_catalogo
+    propiedades:
+      sin_agent_run: true
+      sin_cifras: true
+      idioma_respuesta: es
+    rubrica:
+      - dice que esa pregunta no está en el catálogo de WhatsApp y sugiere «@carmen ayuda»
+    k_de_n: [3, 3]
+
+  - id: VC08
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "@carmen disponibilidad frente a SLA del proveedor de Alcorcón"
+    modo_esperado: REFUSE
+    negativa: { motivo: canal_no_autorizado }
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: true
+      plantilla: disponibilidad_sla_proveedor
+      parametros: { estacion: Alcorcón }
+      respuesta: consultar_en_web
+      clasificacion: restringida
+    propiedades:
+      sin_agent_run: true
+      sin_cifras: true
+      idioma_respuesta: es
+    rubrica:
+      - responde que ese dato se consulta en la web de Carmen, sin dar ninguna cifra
+    k_de_n: [3, 3]
+
+  - id: VC09
+    categoria: catalogo
+    locale: es
+    role: OPERATOR
+    pregunta: "alarmas abiertas en Alcorcón"
+    catalogo:
+      canal: whatsapp
+      en_grupo: true
+      mencion: false
+      respuesta: ignorar
+    propiedades:
+      sin_agent_run: true
+    rubrica:
+      - Carmen no contesta a un mensaje del grupo que no la menciona
+    k_de_n: [3, 3]

@@ -1,0 +1,294 @@
+{
+  "schema": "evidence.schema.json",
+  "valid": [
+    {
+      "type": "fact",
+      "fact_id": "alarmas_total",
+      "call_id": "cal_7f3a9c1e2b40",
+      "system_id": "vigia",
+      "metric": "alarmas",
+      "label": "Alarmas del periodo",
+      "value": 29,
+      "unit": "count",
+      "entity": {
+        "type": "site",
+        "id": "1",
+        "name": "Getafe"
+      },
+      "dimensions": {},
+      "period": {
+        "expression": "mes_actual",
+        "from": "2026-07-01T00:00:00Z",
+        "to": "2026-07-27T09:14:22Z",
+        "text": "del 1 al 27 de julio de 2026"
+      },
+      "provenance": {
+        "tool_name": "build_dossier",
+        "catalog_version": "2026-07-20",
+        "generated_at": "2026-07-27T09:14:22Z"
+      }
+    },
+    {
+      "type": "passage",
+      "passage_id": "p1",
+      "call_id": "cal_9d2f00",
+      "system_id": "plenmind",
+      "document_id": "RB-041",
+      "title": "Runbook · Sonda de nivel sin datos",
+      "section": "2. Comprobaciones previas",
+      "anchor": "p.3",
+      "kind": "warning",
+      "text": "Antes de manipular la sonda, cortar la alimentación.",
+      "doc_version": "3.1",
+      "updated_at": "2026-03-14T00:00:00Z",
+      "url": "https://plenmind.plenergy.local/doc/RB-041#p3",
+      "relevance": 0.94
+    },
+    {
+      "type": "passage",
+      "passage_id": "p2",
+      "call_id": "cal_9d2f00",
+      "system_id": "plenmind",
+      "document_id": "RB-041",
+      "title": "Runbook · Sonda de nivel sin datos",
+      "section": "3. Pasos",
+      "anchor": "p.3",
+      "kind": "procedure",
+      "text": "Comprobar el cableado de la sonda.",
+      "doc_version": "3.1",
+      "updated_at": "2026-03-14T00:00:00Z",
+      "url": "https://plenmind.plenergy.local/doc/RB-041#p3",
+      "relevance": 0.94
+    },
+    {
+      "type": "media",
+      "media_id": "m1",
+      "call_id": "cal_9d2f00",
+      "system_id": "plenmind",
+      "document_id": "RB-041",
+      "mime": "image/png",
+      "caption": "Esquema de conexión de la sonda",
+      "uri": "https://plenmind.plenergy.local/media/RB-041/fig2",
+      "anchor": "fig. 2"
+    },
+    {
+      "type": "fact",
+      "fact_id": "alarmas_total",
+      "call_id": "cal_7f3a9c1e2b40",
+      "system_id": "vigia",
+      "metric": "alarmas",
+      "label": "Alarmas del periodo",
+      "value": "Getafe",
+      "unit": "count",
+      "entity": {
+        "type": "site",
+        "id": "1",
+        "name": "Getafe"
+      },
+      "dimensions": {},
+      "period": {
+        "expression": "mes_actual",
+        "from": "2026-07-01T00:00:00Z",
+        "to": "2026-07-27T09:14:22Z",
+        "text": "del 1 al 27 de julio de 2026"
+      },
+      "provenance": {
+        "tool_name": "build_dossier",
+        "catalog_version": "2026-07-20",
+        "generated_at": "2026-07-27T09:14:22Z"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "why": "sin discriminador type",
+      "doc": {
+        "fact_id": "alarmas_total",
+        "call_id": "cal_7f3a9c1e2b40",
+        "system_id": "vigia",
+        "metric": "alarmas",
+        "label": "Alarmas del periodo",
+        "value": 29,
+        "unit": "count",
+        "entity": {
+          "type": "site",
+          "id": "1",
+          "name": "Getafe"
+        },
+        "dimensions": {},
+        "period": {
+          "expression": "mes_actual",
+          "from": "2026-07-01T00:00:00Z",
+          "to": "2026-07-27T09:14:22Z",
+          "text": "del 1 al 27 de julio de 2026"
+        },
+        "provenance": {
+          "tool_name": "build_dossier",
+          "catalog_version": "2026-07-20",
+          "generated_at": "2026-07-27T09:14:22Z"
+        }
+      }
+    },
+    {
+      "why": "discriminador desconocido: un ModelOutput no es evidencia",
+      "doc": {
+        "type": "model_output",
+        "fact_id": "alarmas_total",
+        "call_id": "cal_7f3a9c1e2b40",
+        "system_id": "vigia",
+        "metric": "alarmas",
+        "label": "Alarmas del periodo",
+        "value": 29,
+        "unit": "count",
+        "entity": {
+          "type": "site",
+          "id": "1",
+          "name": "Getafe"
+        },
+        "dimensions": {},
+        "period": {
+          "expression": "mes_actual",
+          "from": "2026-07-01T00:00:00Z",
+          "to": "2026-07-27T09:14:22Z",
+          "text": "del 1 al 27 de julio de 2026"
+        },
+        "provenance": {
+          "tool_name": "build_dossier",
+          "catalog_version": "2026-07-20",
+          "generated_at": "2026-07-27T09:14:22Z"
+        }
+      }
+    },
+    {
+      "why": "pasaje con campos de hecho",
+      "doc": {
+        "type": "passage",
+        "passage_id": "p1",
+        "call_id": "cal_9d2f00",
+        "system_id": "plenmind",
+        "document_id": "RB-041",
+        "title": "Runbook · Sonda de nivel sin datos",
+        "section": "2. Comprobaciones previas",
+        "anchor": "p.3",
+        "kind": "warning",
+        "text": "Antes de manipular la sonda, cortar la alimentación.",
+        "doc_version": "3.1",
+        "updated_at": "2026-03-14T00:00:00Z",
+        "url": "https://plenmind.plenergy.local/doc/RB-041#p3",
+        "relevance": 0.94,
+        "value": 29
+      }
+    },
+    {
+      "why": "procedimiento sin updated_at",
+      "doc": {
+        "type": "passage",
+        "passage_id": "p2",
+        "call_id": "cal_9d2f00",
+        "system_id": "plenmind",
+        "document_id": "RB-041",
+        "title": "Runbook · Sonda de nivel sin datos",
+        "section": "3. Pasos",
+        "anchor": "p.3",
+        "kind": "procedure",
+        "text": "Comprobar el cableado de la sonda.",
+        "doc_version": "3.1",
+        "url": "https://plenmind.plenergy.local/doc/RB-041#p3",
+        "relevance": 0.94
+      }
+    },
+    {
+      "why": "adjunto incrustado en base64",
+      "doc": {
+        "type": "media",
+        "media_id": "m1",
+        "call_id": "cal_9d2f00",
+        "system_id": "plenmind",
+        "document_id": "RB-041",
+        "mime": "image/png",
+        "caption": "Esquema de conexión de la sonda",
+        "uri": "data:image/png;base64,iVBORw0KGgo=",
+        "anchor": "fig. 2"
+      }
+    },
+    {
+      "why": "relevancia fuera de [0, 1]",
+      "doc": {
+        "type": "passage",
+        "passage_id": "p1",
+        "call_id": "cal_9d2f00",
+        "system_id": "plenmind",
+        "document_id": "RB-041",
+        "title": "Runbook · Sonda de nivel sin datos",
+        "section": "2. Comprobaciones previas",
+        "anchor": "p.3",
+        "kind": "warning",
+        "text": "Antes de manipular la sonda, cortar la alimentación.",
+        "doc_version": "3.1",
+        "updated_at": "2026-03-14T00:00:00Z",
+        "url": "https://plenmind.plenergy.local/doc/RB-041#p3",
+        "relevance": 1.5
+      }
+    },
+    {
+      "why": "unidad desconocida",
+      "doc": {
+        "type": "fact",
+        "fact_id": "alarmas_total",
+        "call_id": "cal_7f3a9c1e2b40",
+        "system_id": "vigia",
+        "metric": "alarmas",
+        "label": "Alarmas del periodo",
+        "value": 29,
+        "unit": "furlongs",
+        "entity": {
+          "type": "site",
+          "id": "1",
+          "name": "Getafe"
+        },
+        "dimensions": {},
+        "period": {
+          "expression": "mes_actual",
+          "from": "2026-07-01T00:00:00Z",
+          "to": "2026-07-27T09:14:22Z",
+          "text": "del 1 al 27 de julio de 2026"
+        },
+        "provenance": {
+          "tool_name": "build_dossier",
+          "catalog_version": "2026-07-20",
+          "generated_at": "2026-07-27T09:14:22Z"
+        }
+      }
+    },
+    {
+      "why": "instante sin zona",
+      "doc": {
+        "type": "fact",
+        "fact_id": "alarmas_total",
+        "call_id": "cal_7f3a9c1e2b40",
+        "system_id": "vigia",
+        "metric": "alarmas",
+        "label": "Alarmas del periodo",
+        "value": 29,
+        "unit": "count",
+        "entity": {
+          "type": "site",
+          "id": "1",
+          "name": "Getafe"
+        },
+        "dimensions": {},
+        "period": {
+          "expression": "mes_actual",
+          "from": "2026-07-01T00:00:00Z",
+          "to": "2026-07-27T09:14:22Z",
+          "text": "del 1 al 27 de julio de 2026"
+        },
+        "provenance": {
+          "tool_name": "build_dossier",
+          "catalog_version": "2026-07-20",
+          "generated_at": "2026-07-27T09:14:22"
+        }
+      }
+    }
+  ]
+}

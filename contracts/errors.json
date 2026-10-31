@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "description": "Taxonomía única de errores (6.6). La traducción a HTTP y SSE la aplica SOLO presentación; el dominio no conoce códigos HTTP. Cada code es estable y coincide con carmen.domain.errors.",
+  "errors": [
+    {
+      "code": "validation_error",
+      "class": "ValidationError",
+      "group": "validation",
+      "http": 422,
+      "sse": "error"
+    },
+    {
+      "code": "unknown_system",
+      "class": "UnknownSystemError",
+      "group": "validation",
+      "http": 422,
+      "sse": "error"
+    },
+    {
+      "code": "unknown_tool",
+      "class": "UnknownToolError",
+      "group": "validation",
+      "http": 422,
+      "sse": "error"
+    },
+    {
+      "code": "invalid_arguments",
+      "class": "InvalidArgumentsError",
+      "group": "validation",
+      "http": 422,
+      "sse": "error"
+    },
+    {
+      "code": "invalid_plan",
+      "class": "InvalidPlanError",
+      "group": "validation",
+      "http": 422,
+      "sse": "error"
+    },
+    {
+      "code": "invalid_transition",
+      "class": "InvalidTransitionError",
+      "group": "validation",
+      "http": 422,
+      "sse": "error"
+    },
+    {
+      "code": "metric_conflict",
+      "class": "MetricConflictError",
+      "group": "semantic",
+      "http": 409,
+      "sse": "error"
+    },
+    {
+      "code": "no_coverage",
+      "class": "NoCoverageError",
+      "group": "semantic",
+      "http": 409,
+      "sse": "error"
+    },
+    {
+      "code": "no_data",
+      "class": "NoDataError",
+      "group": "system_result",
+      "http": 200,
+      "sse": "delta+done"
+    },
+    {
+      "code": "entity_not_resolved",
+      "class": "EntityNotResolvedError",
+      "group": "system_result",
+      "http": 200,
+      "sse": "delta+done"
+    },
+    {
+      "code": "forbidden",
+      "class": "ForbiddenError",
+      "group": "system_result",
+      "http": 403,
+      "sse": "error"
+    },
+    {
+      "code": "mcp_timeout",
+      "class": "McpTimeoutError",
+      "group": "mcp",
+      "http": 503,
+      "sse": "warning+done"
+    },
+    {
+      "code": "mcp_unavailable",
+      "class": "McpUnavailableError",
+      "group": "mcp",
+      "http": 503,
+      "sse": "warning+done"
+    },
+    {
+      "code": "mcp_contract_violation",
+      "class": "McpContractViolationError",
+      "group": "mcp",
+      "http": 503,
+      "sse": "warning+done"
+    },
+    {
+      "code": "llm_unavailable",
+      "class": "LlmUnavailableError",
+      "group": "llm",
+      "http": 503,
+      "sse": "error+done"
+    },
+    {
+      "code": "llm_timeout",
+      "class": "LlmTimeoutError",
+      "group": "llm",
+      "http": 504,
+      "sse": "error+done"
+    },
+    {
+      "code": "grounding_failed",
+      "class": "GroundingFailedError",
+      "group": "grounding",
+      "http": 200,
+      "sse": "grounding+done"
+    },
+    {
+      "code": "cancelled",
+      "class": "CancelledError",
+      "group": "lifecycle",
+      "http": null,
+      "sse": "error+done"
+    },
+    {
+      "code": "internal",
+      "class": "InternalError",
+      "group": "lifecycle",
+      "http": 500,
+      "sse": "error"
+    }
+  ]
+}

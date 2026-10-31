@@ -1,0 +1,632 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenergy.internal/carmen/sse-events.schema.json",
+  "title": "SseEvent",
+  "description": "Eventos SSE 1.1 (6.5): envoltura común y una carga por event_type. La carga de cada tipo está en $defs/<event_type>Payload. El cliente ignora tipos y campos que no conoce.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "correlation_id",
+    "sequence",
+    "timestamp",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^evt_[A-Za-z0-9]{1,60}$"
+    },
+    "event_type": {
+      "enum": [
+        "mode",
+        "stage",
+        "delegation",
+        "tool_call",
+        "tool_result",
+        "agent_result",
+        "approval_required",
+        "delta",
+        "grounding",
+        "warning",
+        "error",
+        "done"
+      ]
+    },
+    "correlation_id": {
+      "$ref": "common.schema.json#/$defs/correlationId"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "timestamp": {
+      "$ref": "common.schema.json#/$defs/instant"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "mode"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/modePayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "stage"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/stagePayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "delegation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/delegationPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "tool_call"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/tool_callPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "tool_result"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/tool_resultPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "agent_result"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/agent_resultPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "approval_required"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/approval_requiredPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "delta"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/deltaPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "grounding"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/groundingPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "warning"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/warningPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "error"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/errorPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "done"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/donePayload"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "modePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "response_mode"
+      ],
+      "properties": {
+        "response_mode": {
+          "$ref": "common.schema.json#/$defs/responseMode"
+        }
+      }
+    },
+    "stagePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage"
+      ],
+      "properties": {
+        "stage": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "step_id": {
+          "$ref": "common.schema.json#/$defs/stepId"
+        }
+      }
+    },
+    "delegationPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "agent_id",
+        "depends_on"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/$defs/taskId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/taskId"
+          }
+        }
+      }
+    },
+    "tool_callPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_id",
+        "task_id",
+        "step_id",
+        "call_id",
+        "system_id",
+        "tool_name",
+        "arguments_digest"
+      ],
+      "properties": {
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "task_id": {
+          "$ref": "common.schema.json#/$defs/taskId"
+        },
+        "step_id": {
+          "$ref": "common.schema.json#/$defs/stepId"
+        },
+        "call_id": {
+          "$ref": "common.schema.json#/$defs/callId"
+        },
+        "system_id": {
+          "$ref": "common.schema.json#/$defs/systemId"
+        },
+        "tool_name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,47}$"
+        },
+        "arguments_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{16,64}$"
+        }
+      }
+    },
+    "tool_resultPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_id",
+        "task_id",
+        "step_id",
+        "call_id",
+        "ok",
+        "facts_count",
+        "ms",
+        "partial"
+      ],
+      "properties": {
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "task_id": {
+          "$ref": "common.schema.json#/$defs/taskId"
+        },
+        "step_id": {
+          "$ref": "common.schema.json#/$defs/stepId"
+        },
+        "call_id": {
+          "$ref": "common.schema.json#/$defs/callId"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "facts_count": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "partial": {
+          "type": "boolean"
+        }
+      }
+    },
+    "agent_resultPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "agent_id",
+        "status",
+        "evidence_count",
+        "ms"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/$defs/taskId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "status": {
+          "$ref": "agent-result.schema.json#/$defs/status"
+        },
+        "evidence_count": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "approval_requiredPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "agent_id",
+        "summary",
+        "impact",
+        "expires_at"
+      ],
+      "properties": {
+        "request_id": {
+          "$ref": "common.schema.json#/$defs/approvalId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        },
+        "summary": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "impact": {
+          "enum": [
+            "high",
+            "critical"
+          ]
+        },
+        "expires_at": {
+          "$ref": "common.schema.json#/$defs/instant"
+        }
+      }
+    },
+    "deltaPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section",
+        "text"
+      ],
+      "properties": {
+        "section": {
+          "enum": [
+            "data",
+            "reading"
+          ]
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "groundingPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "checked",
+        "unsupported"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "checked": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "unsupported": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "claim_id",
+              "raw_value"
+            ],
+            "properties": {
+              "claim_id": {
+                "$ref": "common.schema.json#/$defs/localId"
+              },
+              "raw_value": {
+                "$ref": "common.schema.json#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    },
+    "warningPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "message": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "system_id": {
+          "$ref": "common.schema.json#/$defs/systemId"
+        },
+        "agent_id": {
+          "$ref": "common.schema.json#/$defs/agentId"
+        }
+      }
+    },
+    "errorPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "recoverable"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "message": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "recoverable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "donePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "message_id",
+        "conversation_id",
+        "status",
+        "partial",
+        "missing_systems",
+        "grounding_ok",
+        "plan_id",
+        "round",
+        "repairs",
+        "latency_ms",
+        "model",
+        "catalog_versions",
+        "response_mode",
+        "agents_used",
+        "missing_agents"
+      ],
+      "properties": {
+        "message_id": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "conversation_id": {
+          "$ref": "common.schema.json#/$defs/conversationId"
+        },
+        "status": {
+          "$ref": "conversation-turn.schema.json#/$defs/status"
+        },
+        "partial": {
+          "type": "boolean"
+        },
+        "missing_systems": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/systemId"
+          }
+        },
+        "grounding_ok": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "plan_id": {
+          "oneOf": [
+            {
+              "$ref": "common.schema.json#/$defs/delegationPlanId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "round": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "repairs": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "latency_ms": {
+          "$ref": "common.schema.json#/$defs/nonNegativeInteger"
+        },
+        "model": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "catalog_versions": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "common.schema.json#/$defs/systemId"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "response_mode": {
+          "$ref": "common.schema.json#/$defs/responseMode"
+        },
+        "agents_used": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/agentId"
+          }
+        },
+        "missing_agents": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/agentId"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,294 @@
+{
+  "schema_version": "1.0",
+  "system_id": "vigia",
+  "catalog_version": "2026-07-20",
+  "provisional": true,
+  "fuente": "Herramientas nombradas en 6.2.3 y 5.16.1.1 del Documento Maestro v4.8. El Prompt 12 lo sustituye por el catálogo real del MCP de VigIA; hasta entonces no expone incidencias.",
+  "tools": [
+    {
+      "name": "site_resolver",
+      "description": "Resuelve el texto de una estación, con erratas incluidas, a su sede: site_id, código y nombre. Úsala antes de cualquier consulta de una estación concreta.",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR",
+        "AUDITOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "texto": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "texto"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "query_metric",
+      "description": "Consulta una métrica de la red o de una sede en un periodo. Con granularity devuelve una serie; con compare_to, también el periodo de comparación.",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR",
+        "AUDITOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "enum": [
+              "monitores_ko",
+              "estado_monitores",
+              "alarmas",
+              "alarmas_abiertas",
+              "disponibilidad",
+              "sedes_degradadas",
+              "lavaderos",
+              "lavaderos_ok"
+            ]
+          },
+          "period": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ahora",
+                  "hoy",
+                  "7d",
+                  "30d",
+                  "90d",
+                  "mes_actual",
+                  "mes_anterior"
+                ]
+              },
+              {
+                "type": "string",
+                "pattern": "^20[0-9]{2}-(0[1-9]|1[0-2])$"
+              }
+            ],
+            "description": "Periodos que admite el MCP de VigIA; tope de 400 días (5.16.1.1)"
+          },
+          "site_id": {
+            "type": [
+              "string",
+              "integer",
+              "object"
+            ],
+            "description": "Identificador de sede, literal o referencia a un hecho de un paso anterior"
+          },
+          "estado": {
+            "enum": [
+              "abierta",
+              "cerrada"
+            ]
+          },
+          "granularity": {
+            "enum": [
+              "hora",
+              "dia",
+              "semana"
+            ]
+          },
+          "compare_to": {
+            "enum": [
+              "periodo_anterior",
+              "mismo_periodo_ano_anterior"
+            ]
+          }
+        },
+        "required": [
+          "metric",
+          "period"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "top_n",
+      "description": "Ranking de una métrica agrupada por estación, tipo de alarma, proveedor o zona. Los rankings de volumen los domina «Error de impresora».",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR",
+        "AUDITOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "enum": [
+              "alarmas",
+              "alarmas_abiertas",
+              "disponibilidad"
+            ]
+          },
+          "group_by": {
+            "enum": [
+              "estacion",
+              "tipo_alarma",
+              "proveedor",
+              "zona"
+            ]
+          },
+          "period": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ahora",
+                  "hoy",
+                  "7d",
+                  "30d",
+                  "90d",
+                  "mes_actual",
+                  "mes_anterior"
+                ]
+              },
+              {
+                "type": "string",
+                "pattern": "^20[0-9]{2}-(0[1-9]|1[0-2])$"
+              }
+            ],
+            "description": "Periodos que admite el MCP de VigIA; tope de 400 días (5.16.1.1)"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "estado": {
+            "enum": [
+              "abierta",
+              "cerrada"
+            ]
+          }
+        },
+        "required": [
+          "metric",
+          "group_by",
+          "period"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "build_dossier",
+      "description": "Dossier de una sede, una zona o la red: alarmas por tipo, disponibilidad y desviación respecto a la línea base del periodo de comparación.",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR",
+        "AUDITOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "enum": [
+              "site",
+              "zona",
+              "red"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "integer",
+              "object"
+            ],
+            "description": "Identificador de sede, literal o referencia a un hecho de un paso anterior"
+          },
+          "period": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ahora",
+                  "hoy",
+                  "7d",
+                  "30d",
+                  "90d",
+                  "mes_actual",
+                  "mes_anterior"
+                ]
+              },
+              {
+                "type": "string",
+                "pattern": "^20[0-9]{2}-(0[1-9]|1[0-2])$"
+              }
+            ],
+            "description": "Periodos que admite el MCP de VigIA; tope de 400 días (5.16.1.1)"
+          },
+          "compare_to": {
+            "enum": [
+              "periodo_anterior",
+              "mismo_periodo_ano_anterior"
+            ]
+          }
+        },
+        "required": [
+          "entity",
+          "period"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "correlate_events",
+      "description": "Correlaciona los eventos de una sede en una ventana de tiempo. Solo para el rol ADMIN; sin él la consulta da error de permisos.",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "site_id": {
+            "type": [
+              "string",
+              "integer",
+              "object"
+            ],
+            "description": "Identificador de sede, literal o referencia a un hecho de un paso anterior"
+          },
+          "window": {
+            "enum": [
+              "24h",
+              "7d",
+              "30d"
+            ]
+          }
+        },
+        "required": [
+          "site_id",
+          "window"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_situation_brief",
+      "description": "Resumen de situación de la red en este momento: monitores en KO, alarmas abiertas y sedes degradadas.",
+      "result_kind": "facts",
+      "roles": [
+        "ADMIN",
+        "MANAGER",
+        "OPERATOR",
+        "AUDITOR"
+      ],
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

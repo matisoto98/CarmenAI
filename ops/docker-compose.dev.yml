@@ -1,0 +1,25 @@
+# ops/docker-compose.dev.yml — SOLO lo que necesita contenedor (4.6.2).
+# Todas las imágenes tienen variante arm64 nativa: sin emulación.
+# La API y el frontend se ejecutan nativos; Ollama también (4.6.4).
+# El servidor MCP simulado (mcp-mock) se añade con el Prompt 9.
+#
+#   docker compose -f ops/docker-compose.dev.yml up -d postgres
+#   cd api && python -m carmen.migrations && python -m carmen.migrations --check
+#   cd api && pytest tests/repositories -v      # usa la base carmen_test, que crea si falta
+
+services:
+  postgres:
+    # pgvector 0.8.1 sobre PostgreSQL 16, fijada por digest (el mismo que CI y ops/versions.env).
+    image: pgvector/pgvector:0.8.1-pg16@sha256:33198da2828a14c30348d2ccb4750833d5ed9a44c88d840a0e523d7417120337
+    environment:
+      POSTGRES_USER: carmen
+      POSTGRES_PASSWORD: carmen # pragma: allowlist secret (solo desarrollo local)
+      POSTGRES_DB: carmen
+    ports: ["5432:5432"]
+    volumes: ["carmen-pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carmen"]
+      interval: 5s
+
+volumes:
+  carmen-pg: {}

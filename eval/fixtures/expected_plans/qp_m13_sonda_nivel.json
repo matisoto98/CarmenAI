@@ -1,0 +1,27 @@
+{
+  "catalog_versions": {
+    "plenmind": "2026-07-18"
+  },
+  "intent": "procedural",
+  "limits": {
+    "max_repairs": 2,
+    "max_rounds": 1,
+    "max_tool_calls": 3
+  },
+  "plan_id": "pln_13a1b2c3d4e5",
+  "schema_version": "1.0",
+  "steps": [
+    {
+      "agent": "agent.plenmind",
+      "arguments": {
+        "problema": "sonda de nivel sin datos"
+      },
+      "step_id": "s1",
+      "system": "plenmind",
+      "tool": "get_procedure"
+    }
+  ],
+  "systems": [
+    "plenmind"
+  ]
+}

@@ -4,7 +4,10 @@ version = "0.0.0"
 description = "Carmen: plataforma de gobierno y orquestación de agentes de Plenergy"
 readme = "README.md"
 requires-python = "==3.12.*"
-dependencies = []
+dependencies = [
+    "asyncpg==0.30.0",
+    "sqlalchemy[asyncio]==2.0.44",
+]
 
 [dependency-groups]
 dev = [
@@ -17,6 +20,9 @@ dev = [
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
     "ruff==0.14.0",
+    "pyyaml==6.0.3",
+    "types-pyyaml==6.0.12.20250915",
+    "asyncpg-stubs==0.30.2",
 ]
 
 [build-system]
@@ -69,14 +75,15 @@ strict = true
 disallow_any_explicit = true
 disallow_any_unimported = true
 warn_unreachable = true
-mypy_path = "api/src"
-files = ["api/src", "ops/scripts"]
+mypy_path = ["api/src", "api/tests"]
+# Las pruebas antiguas pasan tipos erróneos a propósito; se tipa el apoyo de pruebas (Prompt 5).
+files = ["api/src", "ops/scripts", "api/tests/support", "api/tests/repositories", "eval/tests"]
 
 # --- pytest (8.1): marcadores por capa ---
 [tool.pytest.ini_options]
 minversion = "8.0"
-testpaths = ["api/tests"]
-pythonpath = ["api/src"]
+testpaths = ["api/tests", "eval/tests"]
+pythonpath = ["api/src", "api/tests"]
 addopts = ["-ra", "--strict-markers", "--strict-config", "--import-mode=importlib"]
 markers = [
     "architecture: reglas de capa (etapa 1)",

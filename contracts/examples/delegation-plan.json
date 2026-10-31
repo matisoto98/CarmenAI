@@ -1,0 +1,629 @@
+{
+  "schema": "delegation-plan.schema.json",
+  "valid": [
+    {
+      "schema_version": "1.0",
+      "plan_id": "dpl_7a3b9c1e4f20",
+      "turn_id": "trn_18ab44de",
+      "response_mode": "DELEGATE_MULTI",
+      "principal_id": "usr_a91f",
+      "policy_version": "pol-2026-07-21",
+      "tasks": [
+        {
+          "task_id": "t1",
+          "agent_id": "agent.vigia",
+          "objective": "alarmas por estación del mes en curso, top 10",
+          "entities": {
+            "periodo": "mes_actual"
+          },
+          "expects": "facts",
+          "locale": "es",
+          "budgets": {
+            "max_wall_ms": 10000,
+            "max_tokens": 6000,
+            "max_cost_eur": 0.0
+          },
+          "delegated_identity": "idr_7f3a9c1e2b40",
+          "depends_on": [],
+          "optional": false
+        },
+        {
+          "task_id": "t2",
+          "agent_id": "agent.plendata",
+          "objective": "margen por estación del mes en curso",
+          "entities": {
+            "periodo": "mes_actual"
+          },
+          "expects": "facts",
+          "locale": "es",
+          "budgets": {
+            "max_wall_ms": 10000,
+            "max_tokens": 6000,
+            "max_cost_eur": 0.0
+          },
+          "delegated_identity": "idr_7f3a9c1e2b40",
+          "depends_on": [],
+          "optional": true
+        }
+      ],
+      "composition": {
+        "kind": "join",
+        "entity": "estacion",
+        "canonical_id": "codigo_estacion",
+        "tasks": [
+          "t1",
+          "t2"
+        ],
+        "on_missing": "hueco_explicito"
+      },
+      "budgets": {
+        "max_wall_ms": 20000,
+        "max_tokens": 14000,
+        "max_cost_eur": 0.0,
+        "max_agents": 3
+      },
+      "requires_human_approval": false
+    },
+    {
+      "schema_version": "1.0",
+      "plan_id": "dpl_7a3b9c1e4f20",
+      "turn_id": "trn_18ab44de",
+      "response_mode": "DELEGATE_SINGLE",
+      "principal_id": "usr_a91f",
+      "policy_version": "pol-2026-07-21",
+      "tasks": [
+        {
+          "task_id": "t1",
+          "agent_id": "agent.vigia",
+          "objective": "alarmas por estación del mes en curso, top 10",
+          "entities": {
+            "periodo": "mes_actual"
+          },
+          "expects": "facts",
+          "locale": "es",
+          "budgets": {
+            "max_wall_ms": 10000,
+            "max_tokens": 6000,
+            "max_cost_eur": 0.0
+          },
+          "delegated_identity": "idr_7f3a9c1e2b40",
+          "depends_on": [],
+          "optional": false
+        }
+      ],
+      "composition": {
+        "kind": "single",
+        "tasks": [
+          "t1"
+        ]
+      },
+      "budgets": {
+        "max_wall_ms": 20000,
+        "max_tokens": 14000,
+        "max_cost_eur": 0.0,
+        "max_agents": 3
+      },
+      "requires_human_approval": false
+    }
+  ],
+  "invalid": [
+    {
+      "why": "una tarea con nombre de herramienta",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "ejecuta query_metric de alarmas",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "una tarea con campo tool",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false,
+            "tool": "query_metric"
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "modo que no delega",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "SUPERVISOR_DIRECT",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "DELEGATE_SINGLE con dos tareas",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_SINGLE",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "DELEGATE_MULTI compuesto como single",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "single",
+          "tasks": [
+            "t1"
+          ]
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "join sin canonical_id",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "token en lugar de referencia de identidad",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "Bearer abc.def.ghi",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "budgets": {
+          "max_wall_ms": 20000,
+          "max_tokens": 14000,
+          "max_cost_eur": 0.0,
+          "max_agents": 3
+        },
+        "requires_human_approval": false
+      }
+    },
+    {
+      "why": "sin presupuesto global",
+      "doc": {
+        "schema_version": "1.0",
+        "plan_id": "dpl_7a3b9c1e4f20",
+        "turn_id": "trn_18ab44de",
+        "response_mode": "DELEGATE_MULTI",
+        "principal_id": "usr_a91f",
+        "policy_version": "pol-2026-07-21",
+        "tasks": [
+          {
+            "task_id": "t1",
+            "agent_id": "agent.vigia",
+            "objective": "alarmas por estación del mes en curso, top 10",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": false
+          },
+          {
+            "task_id": "t2",
+            "agent_id": "agent.plendata",
+            "objective": "margen por estación del mes en curso",
+            "entities": {
+              "periodo": "mes_actual"
+            },
+            "expects": "facts",
+            "locale": "es",
+            "budgets": {
+              "max_wall_ms": 10000,
+              "max_tokens": 6000,
+              "max_cost_eur": 0.0
+            },
+            "delegated_identity": "idr_7f3a9c1e2b40",
+            "depends_on": [],
+            "optional": true
+          }
+        ],
+        "composition": {
+          "kind": "join",
+          "entity": "estacion",
+          "canonical_id": "codigo_estacion",
+          "tasks": [
+            "t1",
+            "t2"
+          ],
+          "on_missing": "hueco_explicito"
+        },
+        "requires_human_approval": false
+      }
+    }
+  ]
+}

@@ -50,8 +50,19 @@ cd api && pytest tests/repositories -v
 
 Las pruebas de repositorio usan su propia base, `carmen_test`, que crean si falta y borran y
 migran al empezar: nunca tocan la de desarrollo. Sin PostgreSQL arrancado se saltan; en CI, que
-define `CARMEN_TEST_DATABASE_URL`, fallan. El servidor MCP simulado, la API y el frontend llegan
-en los Prompts 9, 21 y 29.
+define `CARMEN_TEST_DATABASE_URL`, fallan.
+
+El servidor MCP simulado (`mcp-mock/`, Prompt 9) sirve un sistema de métricas y uno documental
+conformes al contrato de 6.4, sin VPN. La batería de contrato lo arranca sola, o se apunta a
+cualquier servidor con `CARMEN_MCP_TARGETS`:
+
+```bash
+docker compose -f ops/docker-compose.dev.yml up -d mcp-mock
+uv run pytest api/tests/contract -v
+```
+
+Detalles de identidad simulada, modos de fallo y datos en `mcp-mock/README.md`. La API y el
+frontend llegan en los Prompts 21 y 29.
 
 ## Validaciones
 

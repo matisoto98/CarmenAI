@@ -36,7 +36,7 @@ packages = ["api/src/carmen"]
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-src = ["api/src", "api/tests", "ops/scripts"]
+src = ["api/src", "api/tests", "ops/scripts", "mcp-mock"]
 extend-exclude = ["web", "docs"]
 
 [tool.ruff.lint]
@@ -75,9 +75,20 @@ strict = true
 disallow_any_explicit = true
 disallow_any_unimported = true
 warn_unreachable = true
-mypy_path = ["api/src", "api/tests"]
+mypy_path = ["api/src", "api/tests", "mcp-mock"]
 # Las pruebas antiguas pasan tipos erróneos a propósito; se tipa el apoyo de pruebas (Prompt 5).
-files = ["api/src", "ops/scripts", "api/tests/support", "api/tests/repositories", "eval/tests"]
+files = [
+    "api/src",
+    "ops/scripts",
+    "api/tests/support",
+    "api/tests/repositories",
+    "api/tests/contract/conftest.py",
+    "api/tests/contract/mcp_client.py",
+    "api/tests/contract/test_mcp_contract.py",
+    "api/tests/contract/test_mcp_mock.py",
+    "eval/tests",
+    "mcp-mock",
+]
 
 # --- pytest (8.1): marcadores por capa ---
 [tool.pytest.ini_options]
